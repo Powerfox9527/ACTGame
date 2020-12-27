@@ -13,5 +13,10 @@ UCLASS()
 class ACTGAME_API UBaseAbility_Montage : public UGameplayAbility_Montage
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AbilityLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 AblityInputID;
 };

@@ -8,12 +8,28 @@
 #include "PlayerCharacter.generated.h"
 
 UENUM(BlueprintType)
-enum class AbilityInput : uint8
+enum class PlayerAbilityInput : uint8
 {
-	AttackA UMETA(DisplayName = "AttackA"),
-	AttackB UMETA(DisplayName = "AttackB"),
-	AttackC UMETA(DisplayName = "AttackC"),
-	AttackD UMETA(DisplayName = "AttackD"),
+	// 0 None
+	None			UMETA(DisplayName = "None"),
+	// 1 Confirm
+	Confirm			UMETA(DisplayName = "Confirm"),
+	// 2 Cancel
+	Cancel			UMETA(DisplayName = "Cancel"),
+	// 3 LMB
+	Attack	UMETA(DisplayName = "Attack"),
+	// 4 RMB
+	Ability2		UMETA(DisplayName = "Ability2"),
+	// 5 Q
+	Ability3		UMETA(DisplayName = "Ability3"),
+	// 6 E
+	Ability4		UMETA(DisplayName = "Ability4"),
+	// 7 R
+	Ability5		UMETA(DisplayName = "Ability5"),
+	// 8 Sprint
+	Sprint			UMETA(DisplayName = "Sprint"),
+	// 9 Jump
+	Jump			UMETA(DisplayName = "Jump")
 };
 
 UCLASS(config=Game)
@@ -67,6 +83,12 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void ActivateAbility(int32 InputID);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -80,6 +102,9 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Abilities)
-	TSubclassOf<class UGameplayAbility> A_AttackA;
+	TSubclassOf<class UGameplayAbility> GA_Attack;
+
+	UPROPERTY()
+	TArray<FGameplayAbilitySpec> FGAS_Specs;
 };
 

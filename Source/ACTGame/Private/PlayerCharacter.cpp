@@ -6,6 +6,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Abilities/BaseAbility_Montage.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -58,6 +59,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -71,7 +73,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &APlayerCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &APlayerCharacter::TouchStopped);
 
-	AbilitySystemComponent->BindAbilityActivationToInputComponent(PlayerInputComponent, FGameplayAbilityInputBinds("ConfirmInput", "CancelInput", "AbilityInput"));
+	AbilitySystemComponent->BindAbilityActivationToInputComponent(PlayerInputComponent, FGameplayAbilityInputBinds("Confirm", "Cancel", "PlayerAbilityInput"));
 }
 
 void APlayerCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
@@ -130,9 +132,48 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	if (AbilitySystemComponent)
 	{
-		if (A_AttackA)
+		if (GA_Attack)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(A_AttackA.GetDefaultObject(), 1));
+			class UBaseAbility_Montage* ba = Cast<UBaseAbility_Montage>(GA_Attack.GetDefaultObject());
+			int32 abilityLevel = 1;
+			int32 abilityInput = 1;
+			if (ba != NULL)
+			{
+				abilityLevel = ba->AbilityLevel;
+				abilityInput = ba->AblityInputID;
+			}
+			FGameplayAbilitySpec spec = FGameplayAbilitySpec(GA_Attack.GetDefaultObject(), abilityLevel, abilityInput, this);
+			AbilitySystemComponent->GiveAbility(spec);
+			FGAS_Specs.Add(spec);
+		}
+	}
+}
+
+void APlayerCharacter::Attack()
+{
+	ActivateAbility(static_cast<int32>(PlayerAbilityInput::Attack));
+}
+
+void APlayerCharacter::ActivateAbility(int32 InputID)
+{
+	for (auto& spec : FGAS_Specs)
+	{
+		if (spec.InputID == InputID)
+		{
+			if (spec.Ability)
+			{
+				spec.InputPressed = true;
+				if (spec.IsActive())
+				{
+					AbilitySystemComponent->AbilitySpecInputPressed(spec);
+
+					//AbilitySystemComponent->InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, spec.ActivationInfo.GetActivationPredictionKey());
+				}
+				else
+				{
+					AbilitySystemComponent->TryActivateAbility(spec.Handle);
+				}
+			}
 		}
 	}
 }

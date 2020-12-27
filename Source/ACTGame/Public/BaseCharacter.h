@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
-#include "AbilitySystemComponent.h"
+#include "Abilities/ACTAbilitySystemComponent.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
@@ -28,10 +28,10 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
-	class UAbilitySystemComponent* AbilitySystemComponent;
+	class UACTAbilitySystemComponent* AbilitySystemComponent;
 
 	UFUNCTION(BlueprintCallable)
-	class UAbilitySystemComponent* GetAbilitySystemComponent() const override
+	class UACTAbilitySystemComponent* GetAbilitySystemComponent() const override
 	{
 		return AbilitySystemComponent;
 	}
