@@ -18,5 +18,5 @@ public:
 	int32 AbilityLevel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 AblityInputID;
+	int32 AbilityInputID;
 };

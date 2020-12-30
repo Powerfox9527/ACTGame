@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.h"
+#include "Abilities/BaseAttributeSet.h"
 #include "PlayerCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -102,9 +103,12 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Abilities)
-	TSubclassOf<class UGameplayAbility> GA_Attack;
+	TSubclassOf<class UBaseAbility_Montage> GA_Attack;
 
 	UPROPERTY()
 	TArray<FGameplayAbilitySpec> FGAS_Specs;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBaseAttributeSet* AttributeSet;
 };
 

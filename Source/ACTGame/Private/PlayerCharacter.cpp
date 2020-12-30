@@ -134,15 +134,8 @@ void APlayerCharacter::BeginPlay()
 	{
 		if (GA_Attack)
 		{
-			class UBaseAbility_Montage* ba = Cast<UBaseAbility_Montage>(GA_Attack.GetDefaultObject());
-			int32 abilityLevel = 1;
-			int32 abilityInput = 1;
-			if (ba != NULL)
-			{
-				abilityLevel = ba->AbilityLevel;
-				abilityInput = ba->AblityInputID;
-			}
-			FGameplayAbilitySpec spec = FGameplayAbilitySpec(GA_Attack.GetDefaultObject(), abilityLevel, abilityInput, this);
+			FGameplayAbilitySpec spec = FGameplayAbilitySpec(GA_Attack.GetDefaultObject(), 
+				GA_Attack.GetDefaultObject()->AbilityLevel, GA_Attack.GetDefaultObject()->AbilityInputID, this);
 			AbilitySystemComponent->GiveAbility(spec);
 			FGAS_Specs.Add(spec);
 		}
