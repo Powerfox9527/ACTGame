@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
-#include "AGGameplayAbility.h"
-#include "AGAbilitySystemComponent.h"
+#include "Ability/AGGameplayAbility.h"
+#include "Ability/AGAbilitySystemComponent.h"
 #include "AGCharacterBase.generated.h"
 
 UCLASS(config=Game)

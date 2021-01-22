@@ -7,7 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-#include "AGAbilitySystemComponent.h"
+#include "Ability/AGAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AAGCharacterBase::AAGCharacterBase()
