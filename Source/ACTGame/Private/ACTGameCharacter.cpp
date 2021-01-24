@@ -49,41 +49,41 @@ AACTGameCharacter::AACTGameCharacter()
 
 void AACTGameCharacter::Attack()
 {
-	if (ASC)
+	if (AbilitySystemComponent)
 	{
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Attack"));
 		FGameplayTagContainer tagContainer(tag);
-		ASC->TryActivateAbilitiesByTag(tagContainer);
+		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
 	}
 }
 
 void AACTGameCharacter::Command()
 {
-	if (ASC)
+	if (AbilitySystemComponent)
 	{
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Command"));
 		FGameplayTagContainer tagContainer(tag);
-		ASC->TryActivateAbilitiesByTag(tagContainer);
+		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
 	}
 }
 
 void AACTGameCharacter::Roll()
 {
-	if (ASC)
+	if (AbilitySystemComponent)
 	{
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Roll"));
 		FGameplayTagContainer tagContainer(tag);
-		ASC->TryActivateAbilitiesByTag(tagContainer);
+		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
 	}
 }
 
 void AACTGameCharacter::Style()
 {
-	if (ASC)
+	if (AbilitySystemComponent)
 	{
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Style"));
 		FGameplayTagContainer tagContainer(tag);
-		ASC->TryActivateAbilitiesByTag(tagContainer);
+		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
 	}
 }
 

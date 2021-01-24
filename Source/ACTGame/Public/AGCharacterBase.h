@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "Ability/AGGameplayAbility.h"
 #include "Ability/AGAbilitySystemComponent.h"
+#include "Ability/AGAttributeSet.h"
 #include "AGCharacterBase.generated.h"
 
 UCLASS(config=Game)
@@ -24,8 +25,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UAGGameplayAbility>> CharacterAbilities;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		UAGAbilitySystemComponent* ASC;
+		UAGAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UAGAttributeSet* AttributeSet;
+
+	virtual void InitializeAttributes();
 };
 

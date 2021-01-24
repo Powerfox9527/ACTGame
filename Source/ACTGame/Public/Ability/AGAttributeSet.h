@@ -25,6 +25,10 @@ public:
 	
 	UAGAttributeSet();
 
+	// AttributeSet Overrides
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	//virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 		FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UAGAttributeSet, Health)
@@ -53,6 +57,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "ATB")
 		FGameplayAttributeData ATBRegenRate;
 	ATTRIBUTE_ACCESSORS(UAGAttributeSet, ATBRegenRate)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Character")
+		FGameplayAttributeData CharacterLevel;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, CharacterLevel)
 	
 protected:
 	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
