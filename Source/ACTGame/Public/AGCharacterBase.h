@@ -20,20 +20,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 		virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	virtual void BeginPlay() override;
-	void GrantAbilities();
-
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UAGGameplayAbility>> CharacterAbilities;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAbilitySystemComponent* AbilitySystemComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAttributeSet* AttributeSet;
 
-	virtual void InitializeAttributes();
+	virtual void BeginPlay() override;
+
+	virtual void GrantAbilities();
+	virtual void AddStartupEffects();
 };
 

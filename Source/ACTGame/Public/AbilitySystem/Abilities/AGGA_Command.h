@@ -13,6 +13,8 @@ UCLASS()
 class ACTGAME_API UAGGA_Command : public UAGGameplayAbility
 {
 	GENERATED_BODY()
+
+	UAGGA_Command();
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 };

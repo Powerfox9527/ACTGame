@@ -38,10 +38,11 @@ public:
 		void Roll();
 	UFUNCTION(BlueprintCallable)
 		void Style();
-protected:
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ComboSectionName;
+
+protected:
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -66,6 +67,8 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+	virtual void BeginPlay() override;
 
 protected:
 	// APawn interface

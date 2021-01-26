@@ -118,18 +118,6 @@ void AACTGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("Style", IE_Pressed, this, &AACTGameCharacter::Style);
 }
 
-
-void AACTGameCharacter::OnResetVR()
-{
-	// If ACTGame is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in ACTGame.Build.cs is not automatically propagated
-	// and a linker error will result.
-	// You will need to either:
-	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
-	// or:
-	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
 void AACTGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		Jump();
@@ -138,6 +126,11 @@ void AACTGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Loca
 void AACTGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
+}
+
+void AACTGameCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AACTGameCharacter::TurnAtRate(float Rate)
@@ -183,4 +176,5 @@ void AACTGameCharacter::MoveRight(float Value)
 
 void AACTGameCharacter::Tick(float deltaTime)
 {
+	Super::Tick(deltaTime);
 }

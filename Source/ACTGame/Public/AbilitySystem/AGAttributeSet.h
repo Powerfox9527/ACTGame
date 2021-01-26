@@ -61,6 +61,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Character")
 		FGameplayAttributeData CharacterLevel;
 	ATTRIBUTE_ACCESSORS(UAGAttributeSet, CharacterLevel)
+
 	
 protected:
 	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
