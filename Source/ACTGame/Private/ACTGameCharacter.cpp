@@ -178,3 +178,71 @@ void AACTGameCharacter::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 }
+
+float AACTGameCharacter::GetHealth()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetHealth();
+	}
+	return 0;
+}
+
+float AACTGameCharacter::GetMaxHealth()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMaxHealth();
+	}
+	return 0;
+}
+
+float AACTGameCharacter::GetMana()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMana();
+	}
+	return 0;
+}
+
+float AACTGameCharacter::GetMaxMana()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMaxMana();
+	}
+	return 0;
+}
+
+float AACTGameCharacter::GetATB()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetATB();
+	}
+	return 0;
+}
+
+float AACTGameCharacter::GetMaxATB()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMaxATB();
+	}
+	return 0;
+}
+
+TArray<float> AACTGameCharacter::GetUIAttributeData()
+{
+	TArray<float> res;
+	float HealthPercent = GetMaxHealth() != 0 ? GetHealth() / GetMaxHealth() : 0;
+	res.Add(HealthPercent);
+	float ManaPercent = GetMaxMana() != 0 ? GetMana() / GetMaxMana() : 0;
+	res.Add(ManaPercent);
+	float ATBPercent1 = GetATB() > 1 ? 1 : GetATB();
+	res.Add(ATBPercent1);
+	float ATBPercent2 = GetATB() > 1 ? GetATB() - 1 : 0;
+	res.Add(ATBPercent2);
+	return res;
+}

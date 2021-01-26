@@ -82,5 +82,26 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	
 	virtual void Tick(float deltaTime) override;
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetHealth();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetMaxHealth();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetMana();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetMaxMana();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetATB();
+	
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	float GetMaxATB();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	TArray<float> GetUIAttributeData();
 };
 
