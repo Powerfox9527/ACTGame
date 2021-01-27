@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "WeaponActor.h"
 #include "AGCharacterBase.h"
 #include "ACTGameCharacter.generated.h"
+
 
 UCLASS(config=Game)
 class AACTGameCharacter : public AAGCharacterBase
@@ -41,6 +43,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName ComboSectionName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class AWeaponActor> WeaponClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AWeaponActor* Weapon;
 
 protected:
 

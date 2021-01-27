@@ -134,6 +134,16 @@ void AACTGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loca
 void AACTGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Spwan WeaponActor
+	if (WeaponClass)
+	{
+		Weapon = Cast<AWeaponActor>(GetWorld()->SpawnActor<AActor>(WeaponClass, GetActorLocation(), GetActorRotation()));
+	}
+	if( Weapon)
+	{	
+		Weapon->Mesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("WeaponSocket")));
+	}
 }
 
 void AACTGameCharacter::TurnAtRate(float Rate)
