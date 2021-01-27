@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/AGAttributeSet.h"
+#include "GameplayEffect.h"
+#include "GameplayEffectExtension.h"
 
 UAGAttributeSet::UAGAttributeSet()
 {
@@ -23,9 +25,23 @@ void UAGAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
 		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
 	}
 
-	if (Attribute == GetMaxATBAttribute())
+}
+
+void UAGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		AdjustAttributeForMaxChange(ATB, MaxATB, NewValue, GetATBAttribute());
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetATBAttribute())
+	{
+		SetATB(FMath::Clamp(GetATB(), 0.0f, GetMaxATB()));
 	}
 }
 
