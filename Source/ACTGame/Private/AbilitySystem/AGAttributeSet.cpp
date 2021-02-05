@@ -143,16 +143,12 @@ void UAGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 					TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
 				}
 
-				// Show damage number for the Source player unless it was self damage
-				if (SourceActor != TargetActor)
-				{
-// 					AGDPlayerController* PC = Cast<AGDPlayerController>(SourceController);
-// 					if (PC)
-// 					{
-// 						PC->ShowDamageNumber(LocalDamageDone, TargetCharacter);
-// 					}
-					SourceCharacter->ShowDamageNumber(LocalDamageDone);
-				}
+// 				AGDPlayerController* PC = Cast<AGDPlayerController>(SourceController);
+// 				if (PC)
+// 				{
+// 					PC->ShowDamageNumber(LocalDamageDone, TargetCharacter);
+// 				}
+				SourceCharacter->ShowDamageNumber(LocalDamageDone);
 
 				if (!TargetCharacter->IsAlive())
 				{

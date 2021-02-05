@@ -17,4 +17,9 @@ public:
 	UAGDamageExecCalculation();
 	
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
+	FGameplayTag WindMagicTag;
+	FGameplayTag FireMagicTag;
+	FGameplayTag IceMagicTag;
+	FGameplayTag ThunderMagicTag;
 };

@@ -37,17 +37,17 @@ void AWeaponActor::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (OtherActor != OwningCharacter && CanAttack)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Other Get Weapon Hit"));
+		//UE_LOG(LogTemp, Warning, TEXT("Other Get Weapon Hit"));
 		AAGCharacterBase* EnmeyActor = Cast<AAGCharacterBase>(OtherActor);
 		if (EnmeyActor)
 		{
-			UAbilitySystemComponent *AbilitySystemComponent = EnmeyActor->GetAbilitySystemComponent();
+			UAbilitySystemComponent *AbilitySystemComponent = OwningCharacter->GetAbilitySystemComponent();
 			for (TSubclassOf<UGameplayEffect> effectClass : WeaponEffects)
 			{
 				FGameplayEffectSpec spec;
 				UGameplayEffect* effect = effectClass.GetDefaultObject();
 				spec.Initialize(effect, AbilitySystemComponent->MakeEffectContext());
-				AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(spec);
+				AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(spec, EnmeyActor->GetAbilitySystemComponent());
 			}
 		}
 	}

@@ -43,10 +43,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack" )
 	FName ComboSectionName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	TSubclassOf<class AWeaponActor> WeaponClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	AWeaponActor* Weapon;
 
 protected:
 

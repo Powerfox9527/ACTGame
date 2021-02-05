@@ -17,6 +17,20 @@ AAGCharacterBase::AAGCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
+
+	// Cache tags
+	HitDirectionFrontTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front"));
+	HitDirectionBackTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Back"));
+	HitDirectionRightTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Right"));
+	HitDirectionLeftTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left"));
+
+	WindMagicTag = FGameplayTag::RequestGameplayTag(FName("Magic.Wind"));
+	FireMagicTag = FGameplayTag::RequestGameplayTag(FName("Magic.Fire"));
+	IceMagicTag = FGameplayTag::RequestGameplayTag(FName("Magic.Ice"));
+	ThunderMagicTag = FGameplayTag::RequestGameplayTag(FName("Magic.Thunder"));
+
+	DamageTextClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/Blueprints/UI/DamageTextComponent.DamageTextComponent_C"));
+
 }
 
 UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
@@ -24,14 +38,16 @@ UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AAGCharacterBase::PlayHitReact(FGameplayTag HitDirection, AActor* DamageCauser)
-{
-
-}
-
 void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 {
-
+	UAGDamageTextWidgetComponent* DamageText = NewObject<UAGDamageTextWidgetComponent>(this, DamageTextClass);
+	if (DamageText == nullptr)
+		return;
+	DamageText->RegisterComponent();
+	DamageText->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	float DamageTextHeight = DamageText->GetComponentToWorld().GetTranslation().Z;
+	DamageText->AddLocalOffset(FVector(0, 0, -1 * DamageTextHeight));
+	DamageText->SetDamageText(LocalDamageDone);
 }
 
 EAGHitReactDirection AAGCharacterBase::GetHitReactDirection(const FVector& ImpactPoint)
@@ -185,6 +201,51 @@ float AAGCharacterBase::GetMaxATB()
 	if (AttributeSet != nullptr)
 	{
 		return 2.0f;
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetAttackPower()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetAttackPower();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetDefensePower()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetDefensePower();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMagicPower()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMagicPower();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMagicDefense()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMagicDefense();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetPower()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetPower();
 	}
 	return 0;
 }
