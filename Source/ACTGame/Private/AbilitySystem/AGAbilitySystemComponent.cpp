@@ -30,3 +30,8 @@
 // 
 // 	return returnAbilities;
 // }
+
+void UAGAbilitySystemComponent::ReceiveDamage(UAGAbilitySystemComponent* SourceASC, float MitigatedDamage)
+{
+	ReceivedDamage.Broadcast(SourceASC, MitigatedDamage);
+}

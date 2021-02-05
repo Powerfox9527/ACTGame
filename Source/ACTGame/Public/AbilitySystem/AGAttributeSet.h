@@ -14,6 +14,8 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+
+class AAGCharacterBase;
 /**
  * 
  */
@@ -62,8 +64,39 @@ public:
 		FGameplayAttributeData Break;
 	ATTRIBUTE_ACCESSORS(UAGAttributeSet, Break)
 
+	/** 
+	 * 伤害计算公式为 (0.5+AT-DF)*POW*RAND
+	 * AT为攻击力，DF为防御力，POW为每个能力特有的数值
+	 * RAND范围为0.95到1.05，Break状态下0.5替换为2.5
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, Damage)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData AttackPower;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, AttackPower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData DefensePower;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, DefensePower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData MagicPower;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, MagicPower)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData MagicDefense;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, MagicDefense)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+		FGameplayAttributeData Power;
+	ATTRIBUTE_ACCESSORS(UAGAttributeSet, Power)
 	
 protected:
 	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
 
+private:
+	FGameplayTag HitDirectionFrontTag;
+	FGameplayTag HitDirectionBackTag;
 };

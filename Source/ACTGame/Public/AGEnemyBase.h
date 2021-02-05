@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectCalculation.h"
-#include "AGGE_DamageCalculation.generated.h"
+#include "AGCharacterBase.h"
+#include "AGEnemyBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ACTGAME_API UAGGE_DamageCalculation : public UGameplayEffectCalculation
+class ACTGAME_API AAGEnemyBase : public AAGCharacterBase
 {
 	GENERATED_BODY()
 	

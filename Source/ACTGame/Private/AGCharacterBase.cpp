@@ -24,6 +24,60 @@ UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AAGCharacterBase::PlayHitReact(FGameplayTag HitDirection, AActor* DamageCauser)
+{
+
+}
+
+void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
+{
+
+}
+
+EAGHitReactDirection AAGCharacterBase::GetHitReactDirection(const FVector& ImpactPoint)
+{
+	const FVector& ActorLocation = GetActorLocation();
+	// PointPlaneDist is super cheap - 1 vector subtraction, 1 dot product.
+	float DistanceToFrontBackPlane = FVector::PointPlaneDist(ImpactPoint, ActorLocation, GetActorRightVector());
+	float DistanceToRightLeftPlane = FVector::PointPlaneDist(ImpactPoint, ActorLocation, GetActorForwardVector());
+
+
+	if (FMath::Abs(DistanceToFrontBackPlane) <= FMath::Abs(DistanceToRightLeftPlane))
+	{
+		// Determine if Front or Back
+
+		// Can see if it's left or right of Left/Right plane which would determine Front or Back
+		if (DistanceToRightLeftPlane >= 0)
+		{
+			return EAGHitReactDirection::Front;
+		}
+		else
+		{
+			return EAGHitReactDirection::Back;
+		}
+	}
+	else
+	{
+		// Determine if Right or Left
+
+		if (DistanceToFrontBackPlane >= 0)
+		{
+			return EAGHitReactDirection::Right;
+		}
+		else
+		{
+			return EAGHitReactDirection::Left;
+		}
+	}
+
+	return EAGHitReactDirection::Front;
+}
+
+bool AAGCharacterBase::IsAlive()
+{
+	return AttributeSet->GetHealth() > 0;
+}
+
 void AAGCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -80,3 +134,57 @@ void AAGCharacterBase::AddStartupEffects()
 // 	 }
 // 	 bool flag = ActiveGEHandle.IsValid();
 // }
+
+float AAGCharacterBase::GetHealth()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetHealth();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMaxHealth()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMaxHealth();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMana()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMana();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMaxMana()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetMaxMana();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetATB()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetATB();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetMaxATB()
+{
+	if (AttributeSet != nullptr)
+	{
+		return 2.0f;
+	}
+	return 0;
+}
