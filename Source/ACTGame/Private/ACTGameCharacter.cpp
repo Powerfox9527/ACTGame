@@ -46,6 +46,10 @@ AACTGameCharacter::AACTGameCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	TargetComponent = CreateDefaultSubobject<UTargetSystemComponent>(TEXT("TargetSystem"));
+	TargetComponent->PitchMax = -10.0f;
+	TargetComponent->PitchMin = -15.0f;
+	TargetComponent->bShouldControlRotation = false;
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -54,6 +58,10 @@ void AACTGameCharacter::Attack()
 {
 	if (AbilitySystemComponent)
 	{
+		if (TargetComponent->LockedOnTargetActor != nullptr)
+		{
+			RotateToActor(TargetComponent->LockedOnTargetActor);
+		}
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Attack"));
 		FGameplayTagContainer tagContainer(tag);
 		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
@@ -84,6 +92,10 @@ void AACTGameCharacter::Style()
 {
 	if (AbilitySystemComponent)
 	{
+		if (TargetComponent->LockedOnTargetActor != nullptr)
+		{
+			RotateToActor(TargetComponent->LockedOnTargetActor);
+		}
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Style"));
 		FGameplayTagContainer tagContainer(tag);
 		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);

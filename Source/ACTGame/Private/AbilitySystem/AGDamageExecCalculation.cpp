@@ -82,9 +82,9 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	FGameplayTagContainer container;
 	Spec.GetAllAssetTags(container);
 	/**
-	 * ÉËº¦¼ÆËã¹«Ê½Îª (0.5+AT-DF)*POW*RAND
-	 * ATÎª¹¥»÷Á¦£¬DFÎª·ÀÓùÁ¦£¬POWÎªÃ¿¸öÄÜÁ¦ÌØÓĞµÄÊıÖµ
-	 * RAND·¶Î§Îª0.95µ½1.05£¬Break×´Ì¬ÏÂ0.5Ìæ»»Îª2.5
+	 * ä¼¤å®³è®¡ç®—å…¬å¼ä¸º (0.5+AT-DF)*POW*RAND
+	 * ATä¸ºæ”»å‡»åŠ›ï¼ŒDFä¸ºé˜²å¾¡åŠ›ï¼ŒPOWä¸ºæ¯ä¸ªèƒ½åŠ›ç‰¹æœ‰çš„æ•°å€¼
+	 * RANDèŒƒå›´ä¸º0.95åˆ°1.05ï¼ŒBreakçŠ¶æ€ä¸‹0.5æ›¿æ¢ä¸º2.5
 	 */
 	float AttackPower = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AttackPowerDef, EvaluationParameters, AttackPower);
@@ -105,10 +105,10 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	float MitigatedDamage = 0.0f;
 
-	//BreakºÍ½ÇÉ«ÊôĞÔÃ»¹ØÏµ£¬ÔÚÕâÀï¼ÆËã¾Í¿ÉÒÔÁË
+	//Breakå’Œè§’è‰²å±æ€§æ²¡å…³ç³»ï¼Œåœ¨è¿™é‡Œè®¡ç®—å°±å¯ä»¥äº†
 	float Break = 0.0f;
-	//ConstantPowerÓÃÓÚ¼ÆËãBreakÖµÂú»òÊôĞÔÏà¿ËµÄÇé¿ö
-	//»ğÓë±ù»¥¿Ë£¬·çÓëÀ×»¥¿Ë
+	//ConstantPowerç”¨äºè®¡ç®—Breakå€¼æ»¡æˆ–å±æ€§ç›¸å…‹çš„æƒ…å†µ
+	//ç«ä¸å†°äº’å…‹ï¼Œé£ä¸é›·äº’å…‹
 	float ConstantPower = 0.5f;
 
 	if (container.Num() > 0)
@@ -174,6 +174,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::RandRange(0.95f, 1.05f);
 	}
 
+	FMath::CeilToInt(MitigatedDamage);
 	if (MitigatedDamage > 0.f)
 	{
 		// Set the Target's damage meta attribute

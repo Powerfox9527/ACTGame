@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "WeaponActor.h"
 #include "AGCharacterBase.h"
+#include "CameraSystem/TargetSystemComponent.h"
 #include "ACTGameCharacter.generated.h"
 
 
@@ -21,6 +22,10 @@ class AACTGameCharacter : public AAGCharacterBase
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UTargetSystemComponent* TargetComponent;
+
 public:
 	AACTGameCharacter();
 

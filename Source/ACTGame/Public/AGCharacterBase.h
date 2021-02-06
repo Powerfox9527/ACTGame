@@ -8,13 +8,15 @@
 #include "AbilitySystem/Abilities/AGGameplayAbility.h"
 #include "AbilitySystem/AGAbilitySystemComponent.h"
 #include "AbilitySystem/AGAttributeSet.h"
+#include "CameraSystem/TargetSystemComponent.h"
+#include "CameraSystem/TargetSystemTargetableInterface.h"
 #include "UISystem/AGDamageTextWidgetComponent.h"
 #include "ACTGame/ACTGame.h"
 
 #include "AGCharacterBase.generated.h"
 
 UCLASS(config=Game)
-class AAGCharacterBase : public ACharacter, public IAbilitySystemInterface
+class AAGCharacterBase : public ACharacter, public IAbilitySystemInterface, public ITargetSystemTargetableInterface
 {
 	GENERATED_BODY()
 public:
@@ -33,7 +35,7 @@ public:
 		EAGHitReactDirection GetHitReactDirection(const FVector& ImpactPoint);
 
 	UFUNCTION(BlueprintCallable)
-		bool IsAlive();
+		bool IsAlive() const;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UAGGameplayAbility>> CharacterAbilities;
@@ -81,6 +83,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<UAGDamageTextWidgetComponent> DamageTextClass;
+
+	bool IsTargetable_Implementation() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void RotateToActor(AActor* OtherActor, bool noRoll = true);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

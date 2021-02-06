@@ -9,6 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "AbilitySystem/AGAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AAGCharacterBase::AAGCharacterBase()
 {
@@ -89,7 +90,7 @@ EAGHitReactDirection AAGCharacterBase::GetHitReactDirection(const FVector& Impac
 	return EAGHitReactDirection::Front;
 }
 
-bool AAGCharacterBase::IsAlive()
+bool AAGCharacterBase::IsAlive() const
 {
 	return AttributeSet->GetHealth() > 0;
 }
@@ -116,7 +117,7 @@ void AAGCharacterBase::AddStartupEffects()
 
 	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
 	{
-		//后面要把1换成CharacterLevel
+		//鍚庨潰瑕佹妸1鎹㈡垚CharacterLevel
 		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 1, EffectContext);
 		if (NewHandle.IsValid())
 		{
@@ -248,4 +249,21 @@ float AAGCharacterBase::GetPower()
 		return AttributeSet->GetPower();
 	}
 	return 0;
+}
+
+bool AAGCharacterBase::IsTargetable_Implementation() const
+{
+	return IsAlive();
+}
+
+void AAGCharacterBase::RotateToActor(AActor* OtherActor, bool noRoll)
+{
+	if(OtherActor == nullptr)
+		return;
+	FVector TargetLocation = OtherActor->GetActorLocation();
+	FVector OriginLocation = GetActorLocation();
+	FRotator rotateTo = UKismetMathLibrary::FindLookAtRotation(OriginLocation, TargetLocation);
+	if (noRoll)
+		rotateTo.Roll = 0; // 涓嶈涓婁笅浠拌灏辫
+	SetActorRotation(rotateTo);
 }
