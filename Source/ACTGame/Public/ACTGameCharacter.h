@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack" )
 	FName ComboSectionName;
 
+	UFUNCTION(BlueprintCallable)
+		void SetAbilityTarget(AAGCharacterBase* OtherCharacter);
+
 protected:
 
 	/** Called for forwards/backward input */
@@ -92,5 +95,8 @@ public:
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 	TArray<float> GetUIAttributeData();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	AAGCharacterBase* AbilityTarget;
 };
 

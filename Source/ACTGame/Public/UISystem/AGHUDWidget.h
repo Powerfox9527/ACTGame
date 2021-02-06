@@ -46,6 +46,11 @@ public:
 	UListView* AbilityList;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TArray<FText> AbilityNames;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FText SelectAbilityName;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FGameplayTag SelectTag;
+
 // 	UPROPERTY(BlueprintAssignable)
 // 	FActivateAbilityDelegate OnActivate;
 };

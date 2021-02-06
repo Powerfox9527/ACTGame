@@ -89,6 +89,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	void RotateToActor(AActor* OtherActor, bool noRoll = true);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FText SelfName;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAbilitySystemComponent* AbilitySystemComponent;

@@ -102,6 +102,14 @@ void AACTGameCharacter::Style()
 	}
 }
 
+void AACTGameCharacter::SetAbilityTarget(AAGCharacterBase* OtherCharacter)
+{
+	if(OtherCharacter == nullptr)
+		return;
+	RotateToActor(OtherCharacter);
+	AbilityTarget = OtherCharacter;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

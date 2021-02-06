@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/AGGameplayAbility.h"
+#include "AGProjectile.h"
 #include "AGGA_Magic.generated.h"
 
+class AAGProjectile;
 /**
  * 
  */
@@ -16,4 +18,7 @@ class ACTGAME_API UAGGA_Magic : public UAGGameplayAbility
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	public:
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<AAGProjectile> ProjectileClass;
 };
