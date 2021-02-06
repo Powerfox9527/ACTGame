@@ -38,3 +38,12 @@ void UAGGA_Attack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventDa
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
+void UAGGA_Attack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+}
+

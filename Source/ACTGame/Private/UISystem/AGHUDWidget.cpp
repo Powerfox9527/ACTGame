@@ -28,7 +28,6 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 {
 	if (AbilityList == nullptr)
 		return;
-	AbilityList->ClearSelection();
 	AbilityList->ClearListItems();
 	if (tag == FGameplayTag::EmptyTag)
 	{
@@ -109,7 +108,7 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 		Obj->AbilityName = name;
 		AbilityList->AddItem(Obj);
 	}
-	//AbilityList->SetSelectedIndex(0);
+	AbilityList->SetSelectedIndex(0);
 }
 
 bool UAGHUDWidget::ConfirmCommand()
@@ -180,6 +179,7 @@ bool UAGHUDWidget::ConfirmCommand()
 				//character->RotateToActor(SelectCharacter);
 				character->SetAbilityTarget(SelectCharacter);
 				character->GetAbilitySystemComponent()->TryActivateAbilityByClass(ability);
+				AbilityList->ClearSelection();
 				return true;
 			}
 		}

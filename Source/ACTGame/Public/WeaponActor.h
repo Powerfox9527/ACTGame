@@ -53,6 +53,9 @@ public:
 			bool bFromSweep,
 			const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintCallable)
 	void LagFrame(int32 LagCount, float LagTime);
+
+	UFUNCTION(BlueprintCallable)
+	FTransform GetProjectileTransform();
 };
