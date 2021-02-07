@@ -44,10 +44,16 @@ void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 	UAGDamageTextWidgetComponent* DamageText = NewObject<UAGDamageTextWidgetComponent>(this, DamageTextClass);
 	if (DamageText == nullptr)
 		return;
+	UMeshComponent* MeshComponent = FindComponentByClass<UMeshComponent>();
+	DamageText->SetWidgetSpace(EWidgetSpace::Screen);
+	DamageText->SetupAttachment(MeshComponent, FName("ProjectileSocket"));
+	DamageText->SetRelativeLocation(FVector(FMath::RandRange(-20.0f, 20.0f), FMath::RandRange(-20.0f, 20.0f), FMath::RandRange(-5.0f, 5.0f)));
+	DamageText->SetDrawSize(FVector2D(GetMaxHealth() == 0 ? 100 : LocalDamageDone/GetMaxHealth()));
+	DamageText->SetVisibility(true);
 	DamageText->RegisterComponent();
-	DamageText->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	//DamageText->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("ProjectileSocket"));
 	float DamageTextHeight = DamageText->GetComponentToWorld().GetTranslation().Z;
-	DamageText->AddLocalOffset(FVector(0, 0, -1 * DamageTextHeight));
+	//DamageText->AddLocalOffset(FVector(0, 0, -1 * DamageTextHeight));
 	DamageText->SetDamageText(LocalDamageDone);
 }
 
@@ -267,3 +273,14 @@ void AAGCharacterBase::RotateToActor(AActor* OtherActor, bool noRoll)
 		rotateTo.Roll = 0; // 不要上下仰视就行
 	SetActorRotation(rotateTo);
 }
+
+bool AAGCharacterBase::IsPlayingMontage()
+{
+	return GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
+}
+
+FTransform AAGCharacterBase::GetProjectileTransform()
+{
+	return GetMesh()->GetSocketTransform(FName("ProjectileSocket"));
+}
+

@@ -2,6 +2,7 @@
 
 
 #include "AGProjectile.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AAGProjectile::AAGProjectile()
@@ -12,6 +13,8 @@ AAGProjectile::AAGProjectile()
 	bReplicates = true;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
+
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(FName("CapsuleComponent"));
 }
 
 // Called when the game starts or when spawned

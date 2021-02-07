@@ -10,6 +10,7 @@ UAGGA_Roll::UAGGA_Roll()
 {
 	FGameplayTag AbilityInputTag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Roll"));
 	AbilityTags.AddTag(AbilityInputTag);
+	ActivationOwnedTags.AddTag(AbilityInputTag);
 }
 
 void UAGGA_Roll::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

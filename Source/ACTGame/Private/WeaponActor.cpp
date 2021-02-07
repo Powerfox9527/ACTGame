@@ -57,9 +57,3 @@ void AWeaponActor::LagFrame(int32 LagCount, float LagTime)
 {
 
 }
-
-FTransform AWeaponActor::GetProjectileTransform()
-{
-	return Mesh->GetSocketTransform(FName("Projectile"));
-}
-

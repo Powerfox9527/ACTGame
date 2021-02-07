@@ -98,5 +98,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	AAGCharacterBase* AbilityTarget;
+
 };
 

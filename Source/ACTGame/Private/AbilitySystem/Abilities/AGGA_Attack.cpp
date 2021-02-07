@@ -10,6 +10,7 @@ UAGGA_Attack::UAGGA_Attack()
 {
 	FGameplayTag AbilityInputTag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Attack"));
 	AbilityTags.AddTag(AbilityInputTag);
+	ActivationOwnedTags.AddTag(AbilityInputTag);
 }
 
 void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -28,13 +29,13 @@ void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Task->OnCancelled.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->OnBlendOut.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->ReadyForActivation();
-	OwningActor->GetCharacterMovement()->SetActive(false);
+/*	OwningActor->GetCharacterMovement()->SetActive(false);*/
 }
 
 void UAGGA_Attack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	AACTGameCharacter* OwningActor = Cast<AACTGameCharacter>(GetOwningActorFromActorInfo());
-	OwningActor->GetCharacterMovement()->SetActive(true);
+// 	AACTGameCharacter* OwningActor = Cast<AACTGameCharacter>(GetOwningActorFromActorInfo());
+// 	OwningActor->GetCharacterMovement()->SetActive(true);
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 

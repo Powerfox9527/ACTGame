@@ -14,6 +14,10 @@ UAGGA_Magic::UAGGA_Magic()
 // 
 // 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Skill")));
 
+	FGameplayTag AbilityInputTag = FGameplayTag::RequestGameplayTag(FName("Command.Magic"));
+	AbilityTags.AddTag(AbilityInputTag);
+	ActivationOwnedTags.AddTag(AbilityInputTag);
+
 	Range = 1000.0f;
 	Damage = 12.0f;
 }
@@ -73,14 +77,13 @@ void UAGGA_Magic::EventReceived(FGameplayTag EventTag, FGameplayEventData EventD
 		// Pass the damage to the Damage Execution Calculation through a SetByCaller value on the GameplayEffectSpec
 		DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), Damage);
 		FTransform ProjectileTransform;
-		if (Hero->Weapon)
+		if (Hero)
 		{
-			ProjectileTransform = Hero->Weapon->GetProjectileTransform();
+			ProjectileTransform = Hero->GetProjectileTransform();
 		}
 		else
 		{
 			ProjectileTransform = Hero->GetActorTransform();
-			ProjectileTransform.SetLocation(ProjectileTransform.GetLocation() + Hero->GetActorForwardVector());
 		}
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -89,6 +92,7 @@ void UAGGA_Magic::EventReceived(FGameplayTag EventTag, FGameplayEventData EventD
 			Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		Projectile->Range = Range;
+		Projectile->OwningCharacter = Cast<AAGCharacterBase>(this->GetOwningActorFromActorInfo());
 		Projectile->FinishSpawning(ProjectileTransform);
 	}
 }

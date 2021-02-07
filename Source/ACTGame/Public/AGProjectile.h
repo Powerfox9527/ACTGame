@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameplayEffect.h"
+#include "ACTGame/Public/AGCharacterBase.h"
 #include "AGProjectile.generated.h"
 
 UCLASS()
@@ -26,6 +27,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+		class UCapsuleComponent* CapsuleComponent;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+		class AAGCharacterBase* OwningCharacter;
 
 protected:
 	// Called when the game starts or when spawned

@@ -92,6 +92,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FText SelfName;
 
+	UFUNCTION(BlueprintCallable)
+		bool IsPlayingMontage();
+
+	UFUNCTION(BlueprintCallable)
+		FTransform GetProjectileTransform();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAbilitySystemComponent* AbilitySystemComponent;

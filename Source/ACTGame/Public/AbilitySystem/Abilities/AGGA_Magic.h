@@ -31,7 +31,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* MontageToPlay;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<AAGProjectile> ProjectileClass;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

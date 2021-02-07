@@ -181,7 +181,7 @@ void AACTGameCharacter::LookUpAtRate(float Rate)
 
 void AACTGameCharacter::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && !IsPlayingMontage())
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -195,7 +195,7 @@ void AACTGameCharacter::MoveForward(float Value)
 
 void AACTGameCharacter::MoveRight(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && !IsPlayingMontage())
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();

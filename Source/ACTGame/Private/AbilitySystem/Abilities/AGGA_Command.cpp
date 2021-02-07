@@ -8,6 +8,7 @@ UAGGA_Command::UAGGA_Command()
 {
 	FGameplayTag AbilityInputTag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Command"));
 	AbilityTags.AddTag(AbilityInputTag);
+	ActivationOwnedTags.AddTag(AbilityInputTag);
 }
 
 void UAGGA_Command::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
