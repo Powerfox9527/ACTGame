@@ -107,6 +107,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	//Break和角色属性没关系，在这里计算就可以了
 	float Break = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BreakDef, EvaluationParameters, Break);
 	//ConstantPower用于计算Break值满或属性相克的情况
 	//火与冰互克，风与雷互克
 	float ConstantPower = 0.5f;

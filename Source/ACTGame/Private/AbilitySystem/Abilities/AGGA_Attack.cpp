@@ -44,6 +44,8 @@ void UAGGA_Attack::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		AAGCharacterBase* character = Cast<AAGCharacterBase>(this->GetOwningActorFromActorInfo());
+		character->EnhancePower(1.0f);
 		return;
 	}
 }

@@ -81,6 +81,9 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 		float GetPower();
 
+	UFUNCTION(BlueprintCallable)
+		void EnhancePower(float Enhancement);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<UAGDamageTextWidgetComponent> DamageTextClass;
 

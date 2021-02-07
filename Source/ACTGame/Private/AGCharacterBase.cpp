@@ -45,15 +45,25 @@ void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 	if (DamageText == nullptr)
 		return;
 	UMeshComponent* MeshComponent = FindComponentByClass<UMeshComponent>();
-	DamageText->SetWidgetSpace(EWidgetSpace::Screen);
-	DamageText->SetupAttachment(MeshComponent, FName("ProjectileSocket"));
-	DamageText->SetRelativeLocation(FVector(FMath::RandRange(-20.0f, 20.0f), FMath::RandRange(-20.0f, 20.0f), FMath::RandRange(-5.0f, 5.0f)));
-	DamageText->SetDrawSize(FVector2D(GetMaxHealth() == 0 ? 100 : LocalDamageDone/GetMaxHealth()));
-	DamageText->SetVisibility(true);
+// 	DamageText->SetWidgetSpace(EWidgetSpace::World);
+// 	DamageText->SetupAttachment(MeshComponent, FName("ProjectileSocket"));
+// 	DamageText->SetRelativeLocation(FVector(FMath::RandRange(-15.0f, 15.0f), FMath::RandRange(-15.0f, 15.0f), FMath::RandRange(-5.0f, 5.0f)));
+// 	DamageText->SetDrawSize(FVector2D(GetMaxHealth() == 0 ? 100 : LocalDamageDone/GetMaxHealth()));
+// 	DamageText->SetVisibility(true);
 	DamageText->RegisterComponent();
-	//DamageText->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("ProjectileSocket"));
-	float DamageTextHeight = DamageText->GetComponentToWorld().GetTranslation().Z;
-	//DamageText->AddLocalOffset(FVector(0, 0, -1 * DamageTextHeight));
+	DamageText->SetWidgetSpace(EWidgetSpace::Screen);
+	DamageText->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("ProjectileSocket"));
+	DamageText->SetVisibility(true);
+	FVector2D Result = FVector2D(1, 1);
+
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(Result);
+	}
+	float width = Result.X;
+	float height = Result.Y;
+	DamageText->GetWidget()->SetPositionInViewport(
+		FVector2D(FMath::RandRange(width * 0.33f, width * 0.67f), FMath::RandRange(height * 0.33f, height * 0.67f)));
 	DamageText->SetDamageText(LocalDamageDone);
 }
 
@@ -255,6 +265,15 @@ float AAGCharacterBase::GetPower()
 		return AttributeSet->GetPower();
 	}
 	return 0;
+}
+
+void AAGCharacterBase::EnhancePower(float Enhancement)
+{
+	if (AttributeSet != nullptr)
+	{
+		AttributeSet->SetPower(Enhancement);
+	}
+	return;
 }
 
 bool AAGCharacterBase::IsTargetable_Implementation() const

@@ -59,7 +59,6 @@ void UAGGA_Magic::EventReceived(FGameplayTag EventTag, FGameplayEventData EventD
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
 	}
 
 	// Only spawn projectiles on the Server.
@@ -90,6 +89,11 @@ void UAGGA_Magic::EventReceived(FGameplayTag EventTag, FGameplayEventData EventD
 
 		AAGProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAGProjectile>(ProjectileClass, ProjectileTransform, GetOwningActorFromActorInfo(),
 			Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (Projectile == nullptr)
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			return;
+		}
 		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		Projectile->Range = Range;
 		Projectile->OwningCharacter = Cast<AAGCharacterBase>(this->GetOwningActorFromActorInfo());
