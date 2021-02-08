@@ -4,12 +4,4 @@
 /Intermediate
 /DerivedDataCache
 /*.sln
-/Content/InfinityBladeWeapons
-/Content/Developers
-/Content/Collections
-/Content/Characters
-/Content/AdvancedMagicFX12
-/Content/StarterContent
-/Content/Audio
-/Content/Particles
-/Content/Weapon
+/Content
