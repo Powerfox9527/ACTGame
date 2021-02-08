@@ -4,6 +4,7 @@
 #include "AbilitySystem/AGDamageExecCalculation.h"
 #include "AbilitySystem/AGAttributeSet.h"
 #include "AGCharacterBase.h"
+#include "ACTGame/Public/ACTGameCharacter.h"
 #include "AbilitySystem/AGAbilitySystemComponent.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
@@ -175,12 +176,19 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::RandRange(0.95f, 1.05f);
 	}
 
-	FMath::CeilToInt(MitigatedDamage);
+	MitigatedDamage = FMath::RoundToInt(MitigatedDamage);
 	if (MitigatedDamage > 0.f)
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, MitigatedDamage));
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().BreakProperty, EGameplayModOp::Additive, Break));
+		if (Cast<AACTGameCharacter>(TargetCharacter) != nullptr)
+		{
+			Break = 0.0f;
+		}
+		else
+		{
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().BreakProperty, EGameplayModOp::Additive, Break));
+		}
 	}
 
 	// Broadcast damages to Target ASC

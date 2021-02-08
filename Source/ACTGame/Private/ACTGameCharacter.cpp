@@ -110,6 +110,24 @@ void AACTGameCharacter::SetAbilityTarget(AAGCharacterBase* OtherCharacter)
 	AbilityTarget = OtherCharacter;
 }
 
+void AACTGameCharacter::AccelerateATB(float Speed, float Time)
+{
+	if (AttributeSet->GetATBRegenRate() <= 1.0f)
+	{
+		AttributeSet->SetATBRegenRate(Speed);
+		FTimerHandle UnusedHandle;
+		GetWorldTimerManager().SetTimer(
+			UnusedHandle, this, &AACTGameCharacter::AccelerateATB_Implementation, Time, false);
+	}
+	else
+		return;
+}
+
+void AACTGameCharacter::AccelerateATB_Implementation()
+{
+	AttributeSet->SetATBRegenRate(1.0f);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -156,15 +174,7 @@ void AACTGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// Spwan WeaponActor
-	if (WeaponClass)
-	{
-		Weapon = Cast<AWeaponActor>(GetWorld()->SpawnActor<AActor>(WeaponClass, GetActorLocation(), GetActorRotation()));
-	}
-	if( Weapon)
-	{	
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("WeaponSocket")));
-		Weapon->OwningCharacter = this;
-	}
+	SpawnWeaponAndAttach();
 }
 
 void AACTGameCharacter::TurnAtRate(float Rate)

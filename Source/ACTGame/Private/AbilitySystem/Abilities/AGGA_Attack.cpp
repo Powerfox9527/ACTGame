@@ -28,6 +28,7 @@ void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Task->OnInterrupted.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->OnCancelled.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->OnBlendOut.AddDynamic(this, &UAGGA_Attack::OnCompleted);
+	Task->EventReceived.AddDynamic(this, &UAGGA_Attack::EventReceived);
 	Task->ReadyForActivation();
 /*	OwningActor->GetCharacterMovement()->SetActive(false);*/
 }

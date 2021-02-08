@@ -10,6 +10,7 @@
 #include "AbilitySystem/AGAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ACTGame/Public/WeaponActor.h"
 
 AAGCharacterBase::AAGCharacterBase()
 {
@@ -41,6 +42,8 @@ UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
 
 void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 {
+	if(DamageTextClass.GetDefaultObject() == nullptr)
+		return;
 	UAGDamageTextWidgetComponent* DamageText = NewObject<UAGDamageTextWidgetComponent>(this, DamageTextClass);
 	if (DamageText == nullptr)
 		return;
@@ -65,6 +68,20 @@ void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 	DamageText->GetWidget()->SetPositionInViewport(
 		FVector2D(FMath::RandRange(width * 0.33f, width * 0.67f), FMath::RandRange(height * 0.33f, height * 0.67f)));
 	DamageText->SetDamageText(LocalDamageDone);
+}
+
+void AAGCharacterBase::SpawnWeaponAndAttach()
+{
+	// Spwan WeaponActor
+	if (WeaponClass)
+	{
+		Weapon = Cast<AWeaponActor>(GetWorld()->SpawnActor<AActor>(WeaponClass, GetActorLocation(), GetActorRotation()));
+	}
+	if (Weapon)
+	{
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName(TEXT("WeaponSocket")));
+		Weapon->OwningCharacter = this;
+	}
 }
 
 EAGHitReactDirection AAGCharacterBase::GetHitReactDirection(const FVector& ImpactPoint)
@@ -282,15 +299,17 @@ bool AAGCharacterBase::IsTargetable_Implementation() const
 	return IsAlive();
 }
 
-void AAGCharacterBase::RotateToActor(AActor* OtherActor, bool noRoll)
+void AAGCharacterBase::RotateToActor(AActor* OtherActor, bool noPitch)
 {
 	if(OtherActor == nullptr)
 		return;
 	FVector TargetLocation = OtherActor->GetActorLocation();
 	FVector OriginLocation = GetActorLocation();
 	FRotator rotateTo = UKismetMathLibrary::FindLookAtRotation(OriginLocation, TargetLocation);
-	if (noRoll)
-		rotateTo.Roll = 0; // 不要上下仰视就行
+	if (noPitch)
+	{
+		rotateTo.Pitch = 0;
+	}
 	SetActorRotation(rotateTo);
 }
 

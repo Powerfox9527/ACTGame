@@ -194,7 +194,7 @@ void UAGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	}
 	else if (Data.EvaluatedData.Attribute == GetBreakAttribute())
 	{
-		SetATB(FMath::Clamp(GetATB(), 0.0f, 1.0f));
+		SetBreak(FMath::Clamp(GetBreak(), 0.0f, 1.0f));
 	}
 }
 

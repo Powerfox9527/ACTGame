@@ -32,6 +32,9 @@ public:
 		virtual void ShowDamageNumber(float LocalDamageDone);
 
 	UFUNCTION(BlueprintCallable)
+		void SpawnWeaponAndAttach();
+
+	UFUNCTION(BlueprintCallable)
 		EAGHitReactDirection GetHitReactDirection(const FVector& ImpactPoint);
 
 	UFUNCTION(BlueprintCallable)
@@ -84,13 +87,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void EnhancePower(float Enhancement);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<UAGDamageTextWidgetComponent> DamageTextClass;
 
 	bool IsTargetable_Implementation() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Camera")
-	void RotateToActor(AActor* OtherActor, bool noRoll = true);
+	void RotateToActor(AActor* OtherActor, bool noPitch = true);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FText SelfName;

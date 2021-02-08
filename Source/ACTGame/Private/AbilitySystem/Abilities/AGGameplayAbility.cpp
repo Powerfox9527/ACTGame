@@ -3,3 +3,7 @@
 
 #include "AbilitySystem/Abilities/AGGameplayAbility.h"
 
+bool UAGGameplayAbility::IsAvailable_Implementation()
+{
+	return true;
+}

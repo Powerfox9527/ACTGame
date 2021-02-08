@@ -29,23 +29,26 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 	if (AbilityList == nullptr)
 		return;
 	AbilityList->ClearListItems();
-	if (tag == FGameplayTag::EmptyTag)
+	AbilityNames.Empty();
+	AbilityAvailables.Empty();
+	//LastTags.Add(tag);
+	if (tag == FGameplayTag::RequestGameplayTag(FName("Command.Main")))
 	{
-		AbilityNames.Empty();
 		AbilityNames.Add(FText::FromString("Ability"));
 		AbilityNames.Add(FText::FromString("Magic"));
 		AbilityNames.Add(FText::FromString("Item"));
+		for(int i = 0; i < 3; ++i)
+			AbilityAvailables.Add(true);
 	}
 	else if (tag == FGameplayTag::RequestGameplayTag(FName("Command.Enemy")))
 	{
-		AbilityNames.Empty();
 		AAGEnemyBase* EnemyGetClass = NewObject<AAGEnemyBase>();
 		TArray<AActor*> Enemys; 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyGetClass->StaticClass(), Enemys);
 		for (AActor* enemyActor : Enemys)
 		{
 			AAGEnemyBase* enemy = Cast<AAGEnemyBase>(enemyActor);
-			if (enemy != nullptr)
+			if (enemy != nullptr || !enemy->IsAlive())
 			{
 				if (enemy->SelfName.IsEmpty())
 				{
@@ -55,19 +58,19 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 				{
 					AbilityNames.Add(enemy->SelfName);
 				}
+				AbilityAvailables.Add(true);
 			}
 		}
 	}
 	else if (tag == FGameplayTag::RequestGameplayTag(FName("Command.Friend")))
 	{
-		AbilityNames.Empty();
 		AACTGameCharacter* FriendGetClass = NewObject<AACTGameCharacter>();
 		TArray<AActor*> Friends;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), FriendGetClass->StaticClass(), Friends);
 		for (AActor* friendActor : Friends)
 		{
 			AACTGameCharacter* friendCharacter = Cast<AACTGameCharacter>(friendActor);
-			if (friendCharacter != nullptr)
+			if (friendCharacter != nullptr || !friendCharacter->IsAlive())
 			{
 				if (friendCharacter->SelfName.IsEmpty())
 				{
@@ -77,18 +80,30 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 				{
 					AbilityNames.Add(friendCharacter->SelfName);
 				}
+				AbilityAvailables.Add(true);
 			}
 		}
 	}
 	else
 	{
-		AbilityNames.Empty();
 		AACTGameGameMode* GameMode = Cast<AACTGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		AACTGameCharacter* character = Cast<AACTGameCharacter>(GameMode->MainCharacter);
 		TArray<TSubclassOf<UAGGameplayAbility>> abilities =  character->CharacterAbilities;
 		for (TSubclassOf<UAGGameplayAbility> ability : abilities)
 		{
 			UAGGameplayAbility *abilityInstance = ability.GetDefaultObject();
+			//const FGameplayAbilitySpecHandle* handle = character->GetAbilitySystemComponent()->hand
+			//const FGameplayAbilityActorInfo* info = character->GetAbilitySystemComponent()->AbilityActorInfo.Get();
+// 			if (info == nullptr)
+// 			{
+// 				available = false;
+// 			}
+// 			else
+// 			{
+// 				available = abilityInstance->CheckCost(abilityInstance->GetCurrentAbilitySpecHandle(), info);
+// 			}
+			bool available = abilityInstance->IsAvailable();
+
 			if (abilityInstance->AbilityTags.HasTag(tag))
 			{
 				if (abilityInstance->AbilityName.IsEmpty())
@@ -99,13 +114,18 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 				{
 					AbilityNames.Add(abilityInstance->AbilityName);
 				}
+				AbilityAvailables.Add(available);
 			}
 		}
 	}
-	for (FText name : AbilityNames)
+	int32 AbilityNum = AbilityNames.Num();
+	for (int32 i = 0; i < AbilityNum; ++i)
 	{
+		FText name = AbilityNames[i];
+		bool available = AbilityAvailables[i];
 		UAbilityEntryObj* Obj = NewObject<UAbilityEntryObj>();
 		Obj->AbilityName = name;
+		Obj->Available = available;
 		AbilityList->AddItem(Obj);
 	}
 	AbilityList->SetSelectedIndex(0);
@@ -118,26 +138,32 @@ bool UAGHUDWidget::ConfirmCommand()
 	UObject *Item = AbilityList->GetSelectedItem();
 	int32 index = AbilityList->GetIndexForItem(Item);
 	FText name = AbilityNames[index];
+	if(!AbilityAvailables[index])
+		return false;
 	if (name.ToString() == "Ability")
 	{
 		SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Ability"));
 		SetCommandViewByTag(SelectTag);
+		LastTags.Push(FGameplayTag::RequestGameplayTag(FName("Command.Main")));
 	}
 	else if (name.ToString() == "Magic")
 	{
 		SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Magic"));
 		SetCommandViewByTag(SelectTag);
+		LastTags.Push(FGameplayTag::RequestGameplayTag(FName("Command.Main")));
 	}
 	else if (name.ToString() == "Item")
 	{
 		SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Item"));
 		SetCommandViewByTag(SelectTag);
+		LastTags.Push(FGameplayTag::RequestGameplayTag(FName("Command.Main")));
 	}
 	//选定能力种类后选定施展对象,这里记住一显示CommandView就要清空SelectTag
 	else if (SelectAbilityName.IsEmpty())
 	{
 		if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Item")))
 		{
+			LastTags.Push(SelectTag);
 			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Friend"));
 			SetCommandViewByTag(SelectTag);
 			SelectAbilityName = name;
@@ -145,6 +171,7 @@ bool UAGHUDWidget::ConfirmCommand()
 		else if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Ability"))
 			|| SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Magic")))
 		{
+			LastTags.Push(SelectTag);
 			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Enemy"));
 			SetCommandViewByTag(SelectTag);
 			SelectAbilityName = name;
@@ -185,4 +212,18 @@ bool UAGHUDWidget::ConfirmCommand()
 		}
 	}
 	return false;
+}
+
+bool UAGHUDWidget::ReturnToLastCommandView()
+{
+	// 先这样定返回到最上级的规则吧
+	if (AbilityList == nullptr || LastTags.Num() == 0 || LastTags.Last() == FGameplayTag::EmptyTag)
+	{
+		return true;
+	}
+	else
+	{
+		SetCommandViewByTag(LastTags.Pop());
+		return false;
+	}
 }

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "GameFramework/Character.h"
 #include "ACTGameGameMode.generated.h"
 
 UCLASS()

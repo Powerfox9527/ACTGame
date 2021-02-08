@@ -5,8 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "UMG/Public/Components/ListView.h"
-#include "AbilitySystemComponent.h"
-#include "ACTGameCharacter.h"
+#include "ACTGame/Public/ACTGameCharacter.h"
 #include "ACTGame/ACTGameGameMode.h"
 #include "AGHUDWidget.generated.h"
 
@@ -25,6 +24,8 @@ class ACTGAME_API UAbilityEntryObj : public UObject
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText AbilityName;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool Available = true;
 };
 
 UCLASS()
@@ -38,14 +39,22 @@ class ACTGAME_API UAGHUDWidget : public UUserWidget
 	UFUNCTION(BlueprintCallable)
 	void SetCommandViewByTag(FGameplayTag tag);
 
+	// 以下两个函数，true代表要退出命令界面
 	UFUNCTION(BlueprintCallable)
 	bool ConfirmCommand();
+
+	UFUNCTION(BlueprintCallable)
+	bool ReturnToLastCommandView();
 
 public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	UListView* AbilityList;
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	TArray<FGameplayTag> LastTags;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TArray<FText> AbilityNames;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+		TArray<bool> AbilityAvailables;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText SelectAbilityName;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

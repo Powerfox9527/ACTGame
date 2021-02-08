@@ -16,4 +16,10 @@ class ACTGAME_API UAGGameplayAbility : public UGameplayAbility
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText AbilityName;
+
+	//用于判断是否满足ATB或者法术条件
+	UFUNCTION(BlueprintNativeEvent)
+	bool IsAvailable();
+
+	bool IsAvailable_Implementation();
 };

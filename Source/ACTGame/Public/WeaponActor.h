@@ -7,7 +7,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameplayAbilities/Public/GameplayEffect.h"
-#include "AGCharacterBase.h"
 #include "WeaponActor.generated.h"
 
 class USkeletalMeshComponent;
