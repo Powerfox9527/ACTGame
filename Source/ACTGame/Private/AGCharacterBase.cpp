@@ -120,6 +120,7 @@ void AAGCharacterBase::BeginPlay()
 
 void AAGCharacterBase::GrantAbilities()
 {
+	AbilitySystemComponent->ClearAllAbilities();
 	for (TSubclassOf<UAGGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(StartupAbility));

@@ -84,7 +84,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void EnhancePower(float Enhancement);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 		TSubclassOf<UAGDamageTextWidgetComponent> DamageTextClass;
 
 	bool IsTargetable_Implementation() const;
@@ -101,6 +101,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FTransform GetProjectileTransform();
 
+	UFUNCTION(BlueprintCallable)
+		virtual void GrantAbilities();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAbilitySystemComponent* AbilitySystemComponent;
@@ -109,7 +112,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	virtual void GrantAbilities();
 	virtual void AddStartupEffects();
 
 	FGameplayTag HitDirectionFrontTag;
