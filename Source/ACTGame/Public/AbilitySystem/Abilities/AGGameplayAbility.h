@@ -17,6 +17,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText AbilityName;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Animation")
+		UAnimMontage* MontageToPlay;
+
 	//用于判断是否满足ATB或者法术条件
 	UFUNCTION(BlueprintNativeEvent)
 	bool IsAvailable();

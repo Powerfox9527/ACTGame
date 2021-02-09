@@ -4,18 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/AGGameplayAbility.h"
-#include "AGGA_Item.generated.h"
+#include "AGGA_JumpAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ACTGAME_API UAGGA_Item : public UAGGameplayAbility
+class ACTGAME_API UAGGA_JumpAttack : public UAGGameplayAbility
 {
 	GENERATED_BODY()
-
-public:
-
-	UPROPERTY(BlueprintReadWrite)
-		int32 ItemCount;
+	
 };

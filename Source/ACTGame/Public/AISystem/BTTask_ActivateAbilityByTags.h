@@ -16,6 +16,7 @@ class ACTGAME_API UBTTask_ActivateAbilityByTags : public UBTTask_BlueprintBase
 {
 	GENERATED_BODY()
 public:
+	// return montage play time
 	UFUNCTION(BlueprintCallable)
-	void ActivateAbility(AActor* controlledPawn, FGameplayTag tag);
+	float ActivateAbility(AActor* controlledPawn, FGameplayTag tag);
 };

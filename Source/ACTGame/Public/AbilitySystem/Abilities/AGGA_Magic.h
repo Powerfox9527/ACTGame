@@ -29,9 +29,6 @@ class ACTGAME_API UAGGA_Magic : public UAGGameplayAbility
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimMontage* MontageToPlay;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<AAGProjectile> ProjectileClass;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

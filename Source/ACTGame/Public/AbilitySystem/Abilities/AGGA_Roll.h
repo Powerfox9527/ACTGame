@@ -25,8 +25,9 @@ public:
 	UFUNCTION()
 		void OnFinished();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float RollTime = 2000;
+
 public:
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Animation")
-	UAnimMontage 	*MontageToPlay;
 	
 };

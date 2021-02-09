@@ -91,17 +91,7 @@ void UAGHUDWidget::SetCommandViewByTag(FGameplayTag tag)
 		TArray<TSubclassOf<UAGGameplayAbility>> abilities =  character->CharacterAbilities;
 		for (TSubclassOf<UAGGameplayAbility> ability : abilities)
 		{
-			UAGGameplayAbility *abilityInstance = ability.GetDefaultObject();
-			//const FGameplayAbilitySpecHandle* handle = character->GetAbilitySystemComponent()->hand
-			//const FGameplayAbilityActorInfo* info = character->GetAbilitySystemComponent()->AbilityActorInfo.Get();
-// 			if (info == nullptr)
-// 			{
-// 				available = false;
-// 			}
-// 			else
-// 			{
-// 				available = abilityInstance->CheckCost(abilityInstance->GetCurrentAbilitySpecHandle(), info);
-// 			}
+			UAGGameplayAbility *abilityInstance = NewObject<UAGGameplayAbility>(this, ability);
 			bool available = abilityInstance->IsAvailable();
 
 			if (abilityInstance->AbilityTags.HasTag(tag))

@@ -21,8 +21,6 @@ class ACTGAME_API UAGGA_Attack : public UAGGameplayAbility
 	UFUNCTION()
 		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 public:
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Animation")
-		UAnimMontage* MontageToPlay;
 
 	UFUNCTION()
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);

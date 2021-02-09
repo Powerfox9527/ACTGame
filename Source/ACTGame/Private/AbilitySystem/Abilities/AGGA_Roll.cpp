@@ -27,7 +27,7 @@ void UAGGA_Roll::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	UAGAT_PlayMontageAndWaitForEvent* Task = UAGAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
 	Task->OnCompleted.AddDynamic(this, &UAGGA_Roll::OnCompleted);
 	Task->ReadyForActivation();
-	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "Dash", OwningActor->GetActorForwardVector(), 1000, 0.3, false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, OwningActor->GetVelocity(), 0, false);
+	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "Dash", OwningActor->GetActorForwardVector(), RollTime, MontageToPlay->GetSectionLength(0), false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, OwningActor->GetVelocity(), 0, false);
 	TaskRootMotion->OnFinish.AddDynamic(this, &UAGGA_Roll::OnFinished);
 	TaskRootMotion->ReadyForActivation();
 }

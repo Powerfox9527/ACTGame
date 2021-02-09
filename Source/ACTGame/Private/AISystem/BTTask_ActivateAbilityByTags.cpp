@@ -2,12 +2,13 @@
 
 
 #include "AISystem/BTTask_ActivateAbilityByTags.h"
+#include "AbilitySystem/Abilities/AGGameplayAbility.h"
 
-void UBTTask_ActivateAbilityByTags::ActivateAbility(AActor* controlledPawn, FGameplayTag tag)
+float UBTTask_ActivateAbilityByTags::ActivateAbility(AActor* controlledPawn, FGameplayTag tag)
 {
 	AAGCharacterBase* character = Cast<AAGCharacterBase>(controlledPawn);
 	if (character == nullptr)
-		return;
+		return 0.0f;
 	TArray<TSubclassOf<UAGGameplayAbility>> activateAbilities;
 	TArray<TSubclassOf<UAGGameplayAbility>> abilities = character->CharacterAbilities;
 	for (TSubclassOf<UAGGameplayAbility> ability : abilities)
@@ -20,10 +21,15 @@ void UBTTask_ActivateAbilityByTags::ActivateAbility(AActor* controlledPawn, FGam
 	}
 	if (activateAbilities.Num() == 0)
 	{
-		return;
+		return 0.0f;
 	}
 	int32 index = FMath::RandRange(0, activateAbilities.Num()-1);
 	TSubclassOf<UAGGameplayAbility> activateClass = activateAbilities[index];
 	character->GetAbilitySystemComponent()->TryActivateAbilityByClass(activateClass);
+	UAnimMontage* montage = activateClass.GetDefaultObject()->MontageToPlay;
+	if(montage == nullptr)
+		return 0.0f;
+	float montageTime = montage->GetSectionLength(0);
+	return montageTime;
 	//character->GetAbilitySystemComponent()->TryActivateAbilitiesByClass(activateClass);
 }
