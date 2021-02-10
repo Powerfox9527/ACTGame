@@ -46,15 +46,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool IsAliveAndNoBreak() const;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<class UAGGameplayAbility>> CharacterAbilities;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<class AWeaponActor> WeaponClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AWeaponActor* Weapon;
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)

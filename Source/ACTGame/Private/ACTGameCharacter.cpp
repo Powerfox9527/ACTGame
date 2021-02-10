@@ -90,16 +90,28 @@ void AACTGameCharacter::Roll()
 
 void AACTGameCharacter::Style()
 {
-	if (AbilitySystemComponent)
+	if (Styled)
 	{
-		if (TargetComponent->LockedOnTargetActor != nullptr)
-		{
-			RotateToActor(TargetComponent->LockedOnTargetActor);
-		}
-		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Style"));
-		FGameplayTagContainer tagContainer(tag);
-		AbilitySystemComponent->TryActivateAbilitiesByTag(tagContainer);
+		DeactivateStyle();
+		Styled = false;
 	}
+	else
+	{
+		ActivateStyle();
+		Styled = true;
+	}
+}
+
+bool AACTGameCharacter::ActivateStyle_Implementation()
+{
+	Styled = true;
+	return Styled;
+}
+
+bool AACTGameCharacter::DeactivateStyle_Implementation()
+{
+	Styled = false;
+	return Styled;
 }
 
 void AACTGameCharacter::SetAbilityTarget(AAGCharacterBase* OtherCharacter)

@@ -9,6 +9,8 @@
 #include "CameraSystem/TargetSystemComponent.h"
 #include "ACTGameCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FChangeStyleDelegate, FText, StyleName, bool, Styled);
+
 
 UCLASS(config=Game)
 class AACTGameCharacter : public AAGCharacterBase
@@ -45,12 +47,28 @@ public:
 		void Roll();
 	UFUNCTION(BlueprintCallable)
 		void Style();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		bool ActivateStyle();
+		bool ActivateStyle_Implementation();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack" )
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+		bool DeactivateStyle();
+		bool DeactivateStyle_Implementation();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName ComboSectionName;
 
 	UFUNCTION(BlueprintCallable)
 		void SetAbilityTarget(AAGCharacterBase* OtherCharacter);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool Styled;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FText StyleName;
+
+	UPROPERTY(BlueprintAssignable)
+	FChangeStyleDelegate ChangeStyle;
 
 protected:
 
