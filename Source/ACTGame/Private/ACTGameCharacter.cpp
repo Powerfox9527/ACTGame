@@ -110,24 +110,6 @@ void AACTGameCharacter::SetAbilityTarget(AAGCharacterBase* OtherCharacter)
 	AbilityTarget = OtherCharacter;
 }
 
-void AACTGameCharacter::AccelerateATB(float Speed, float Time)
-{
-	if (AttributeSet->GetATBRegenRate() <= 1.0f)
-	{
-		AttributeSet->SetATBRegenRate(Speed);
-		FTimerHandle UnusedHandle;
-		GetWorldTimerManager().SetTimer(
-			UnusedHandle, this, &AACTGameCharacter::AccelerateATB_Implementation, Time, false);
-	}
-	else
-		return;
-}
-
-void AACTGameCharacter::AccelerateATB_Implementation()
-{
-	AttributeSet->SetATBRegenRate(1.0f);
-}
-
 //////////////////////////////////////////////////////////////////////////
 // Input
 

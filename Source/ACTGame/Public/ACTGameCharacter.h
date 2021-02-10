@@ -52,11 +52,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetAbilityTarget(AAGCharacterBase* OtherCharacter);
 
-	UFUNCTION(BlueprintCallable)
-		void AccelerateATB(float Speed = 5.0f, float Time = 1.0f);
-
-		void AccelerateATB_Implementation();
-
 protected:
 
 	/** Called for forwards/backward input */

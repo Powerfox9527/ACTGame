@@ -37,8 +37,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		EAGHitReactDirection GetHitReactDirection(const FVector& ImpactPoint);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool IsBreaked = false;
+
 	UFUNCTION(BlueprintCallable)
 		bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+		bool IsAliveAndNoBreak() const;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UAGGameplayAbility>> CharacterAbilities;
@@ -84,8 +90,16 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 		float GetPower();
 
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		float GetBreak();
+
 	UFUNCTION(BlueprintCallable)
 		void EnhancePower(float Enhancement);
+
+	UFUNCTION(BlueprintCallable)
+		void AccelerateATB(float Speed = 5.0f, float Time = 1.0f);
+
+	void AccelerateATB_Implementation();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<UAGDamageTextWidgetComponent> DamageTextClass;
@@ -116,6 +130,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void AddStartupEffects();
+
+	//old ATB Regen Rate
+	float ATBRegenRate;
 
 	FGameplayTag HitDirectionFrontTag;
 	FGameplayTag HitDirectionBackTag;

@@ -31,10 +31,10 @@ struct AGDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, AttackPower, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, MagicPower, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, Power, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, Break, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, Break, Target, true);
 
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, DefensePower, Source, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, MagicDefense, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, DefensePower, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAGAttributeSet, MagicDefense, Target, false);
 
 	}
 };
@@ -106,13 +106,18 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	float MitigatedDamage = 0.0f;
 
-	//Break和角色属性没关系，在这里计算就可以了
 	float Break = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BreakDef, EvaluationParameters, Break);
 	//ConstantPower用于计算Break值满或属性相克的情况
 	//火与冰互克，风与雷互克
 	float ConstantPower = 0.5f;
 
+	if (TargetCharacter->IsBreaked == true)
+	{
+		ConstantPower += 2.0f;
+	}
+
+	Break = 0.0f;
 	if (container.Num() > 0)
 	{
 		if(container.HasTag(WindMagicTag))
@@ -175,20 +180,13 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	{
 		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::RandRange(0.95f, 1.05f);
 	}
-
+	Break += 0.01f * Power;
 	MitigatedDamage = FMath::RoundToInt(MitigatedDamage);
 	if (MitigatedDamage > 0.f)
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, MitigatedDamage));
-		if (Cast<AACTGameCharacter>(TargetCharacter) != nullptr)
-		{
-			Break = 0.0f;
-		}
-		else
-		{
-			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().BreakProperty, EGameplayModOp::Additive, Break));
-		}
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().BreakProperty, EGameplayModOp::Additive, Break));
 	}
 
 	// Broadcast damages to Target ASC

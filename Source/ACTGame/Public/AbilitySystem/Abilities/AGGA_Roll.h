@@ -26,7 +26,9 @@ public:
 		void OnFinished();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float RollTime = 2000;
+		float RollLength = 2000;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float RollTime = 0.0f;
 
 public:
 	

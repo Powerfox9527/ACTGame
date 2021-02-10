@@ -125,7 +125,14 @@ EAGHitReactDirection AAGCharacterBase::GetHitReactDirection(const FVector& Impac
 
 bool AAGCharacterBase::IsAlive() const
 {
+	if(AttributeSet == nullptr)
+		return false;
 	return AttributeSet->GetHealth() > 0;
+}
+
+bool AAGCharacterBase::IsAliveAndNoBreak() const
+{
+	return IsAlive() && IsBreaked == false;
 }
 
 void AAGCharacterBase::BeginPlay()
@@ -133,6 +140,21 @@ void AAGCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	GrantAbilities();
 	AddStartupEffects();
+}
+
+void AAGCharacterBase::AccelerateATB(float Speed, float Time)
+{
+
+	ATBRegenRate = AttributeSet->GetATBRegenRate();
+	AttributeSet->SetATBRegenRate(Speed);
+	FTimerHandle UnusedHandle;
+	GetWorldTimerManager().SetTimer(
+		UnusedHandle, this, &AAGCharacterBase::AccelerateATB_Implementation, Time, false);
+}
+
+void AAGCharacterBase::AccelerateATB_Implementation()
+{
+	AttributeSet->SetATBRegenRate(ATBRegenRate);
 }
 
 void AAGCharacterBase::GrantAbilities()
@@ -281,6 +303,15 @@ float AAGCharacterBase::GetPower()
 	if (AttributeSet != nullptr)
 	{
 		return AttributeSet->GetPower();
+	}
+	return 0;
+}
+
+float AAGCharacterBase::GetBreak()
+{
+	if (AttributeSet != nullptr)
+	{
+		return AttributeSet->GetBreak();
 	}
 	return 0;
 }
