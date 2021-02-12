@@ -39,3 +39,13 @@ enum class EACTAbilityInputID : uint8
 	// 7 Jump
 	Jump			UMETA(DisplayName = "Jump")
 };
+
+UENUM(BlueprintType)
+enum class ERoomDirection : uint8
+{
+	North = 0 				UMETA(DisplayName = "North"), // rotation = 0 (world forward)
+	East = 255 				UMETA(DisplayName = "East"),  // rotation = -90 (world right)
+	West = 1 				UMETA(DisplayName = "West"),  // rotation = 90 (world left)
+	South = 2 				UMETA(DisplayName = "South"), // rotation = 180 (world backward)
+	NbDirection = 4 		UMETA(Hidden)
+};

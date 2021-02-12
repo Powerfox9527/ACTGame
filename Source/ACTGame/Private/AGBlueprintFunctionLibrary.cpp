@@ -2,4 +2,8 @@
 
 
 #include "AGBlueprintFunctionLibrary.h"
+#include "Engine/LevelStreaming.h"
 
+void UAGBlueprintFunctionLibrary::GenerateLevel(int32 mazeWidth, int32 mazeHeight)
+{
+}

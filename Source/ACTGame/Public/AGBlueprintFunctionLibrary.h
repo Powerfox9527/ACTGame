@@ -20,4 +20,7 @@ class ACTGAME_API UAGBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 		FString TheFloatStr = FString::SanitizeFloat(value);
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *TheFloatStr);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	void GenerateLevel(int32 mazeWidth, int32 mazeHeight);
 };
