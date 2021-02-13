@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AGBlueprintFunctionLibrary.generated.h"
 
+
+
 /**
  * 
  */
@@ -14,13 +16,11 @@ class ACTGAME_API UAGBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
+public:
 	UFUNCTION(BlueprintCallable)
 	static void DebugHelper(float value)
 	{
 		FString TheFloatStr = FString::SanitizeFloat(value);
 		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *TheFloatStr);
 	}
-
-	UFUNCTION(BlueprintCallable)
-	void GenerateLevel(int32 mazeWidth, int32 mazeHeight);
 };

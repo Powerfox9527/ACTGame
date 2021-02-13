@@ -24,10 +24,6 @@
 		{
 			"Name": "NiagaraExtras",
 			"Enabled": true
-		},
-		{
-			"Name": "ProceduralDungeon",
-			"Enabled": false
 		}
 	]
 }

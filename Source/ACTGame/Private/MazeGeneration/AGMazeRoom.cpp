@@ -3,3 +3,11 @@
 
 #include "MazeGeneration/AGMazeRoom.h"
 
+void AAGMazeRoom::Tick(float DeltaTime)
+{
+	if (!bInited)
+	{
+		bInited = true;
+		this->SetActorTransform(transform);
+	}
+}
