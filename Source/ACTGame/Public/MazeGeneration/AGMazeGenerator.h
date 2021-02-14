@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeGeneration/AGMazeRoom.h"
+#include "Kismet/GameplayStatics.h"
+#include "MazeGeneration/AGMazeRoomData.h"
 #include "AGMazeGenerator.generated.h"
 
 USTRUCT(BlueprintType)
@@ -66,6 +68,16 @@ public:
 	}
 };
 
+USTRUCT(BlueprintType)
+struct FMazeRoom
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	FMazePos RoomStartPos;
+	int32 RoomWidth;
+	int32 RoomHeight;
+};
+
 UCLASS()
 class ACTGAME_API AAGMazeGenerator : public AActor
 {
@@ -86,29 +98,50 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		TArray<FMazeRow> Maze;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		TArray<TSubclassOf<AAGMazeRoom>> RoomClasses;
+		TArray<TSubclassOf<UAGMazeRoomData>> RoomLevels;
 
-		TArray<FMazePos> Path;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int32 SprinkleCount = 100;
 
+	// 一个格子的大小
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FIntVector RoomUnit;
+
+	TArray<FMazePos> Path;
+	TArray<FMazeRoom> Rooms;
+
+public:
+	//注意行数列数需是奇数
 	UFUNCTION(BlueprintCallable)
 		TArray<FMazeRow> GenerateLevel(int32 mazeWidth, int32 mazeHeight);
 
-	void InitMaze(int32 mazeWidth, int32 mazeHeight);
-
-	bool IsValidPos(int32 X, int32 Y);
-
-	bool IsOutOfBound(int32 X, int32 Y);
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		int32 GetColor(int32 X, int32 Y);
 
 	UFUNCTION(BlueprintCallable)
-	void PrintMaze();
+		void PrintMaze();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		int32 GetWidth();
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		int32 GetHeight();
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+		FTransform GetTileTransform(int32 X, int32 Y, int32 Direction);
+
+protected:
+
+	void InitMaze(int32 mazeWidth, int32 mazeHeight);
+
+	bool IsValidPos(int32 X, int32 Y, TArray<int32> ValidColor);
+	
+	bool IsOutOfBound(int32 X, int32 Y);
 
 	void DFS(int32 X, int32 Y);
 
-	UFUNCTION(BlueprintCallable)
-	int32 GetColor(int32 X,int32 Y);
+	void ConnectRooms();
 
 	void Sprinkle(int32 TryCount);
 
 	//这个函数用来找下一个要生成路的点，返回坐标
-	FMazePos FindNextPoint(int32 X, int32 Y, int32& Direction);
+	FMazePos FindNextPoint(int32 X, int32 Y, int32& Direction, TArray<int32> ValidColor);
 };

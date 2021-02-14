@@ -15,22 +15,31 @@ AAGMazeGenerator::AAGMazeGenerator()
 // Called when the game starts or when spawned
 void AAGMazeGenerator::BeginPlay()
 {
-	//Super::BeginPlay();
-	GenerateLevel(15, 15);
+	Super::BeginPlay();
 }
 
 // Called every frame
 void AAGMazeGenerator::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 }
 
 TArray<FMazeRow> AAGMazeGenerator::GenerateLevel(int32 mazeWidth, int32 mazeHeight)
 {
+	if (mazeHeight % 2 == 0)
+	{
+		mazeHeight++;
+	}
+	if (mazeWidth % 2 == 0)
+	{
+		mazeWidth++;
+	}
 	 InitMaze(mazeWidth, mazeHeight);
 	 Path.Add(Maze[1][1]);
-	 //DFS(1, 1);
-	 Sprinkle(15);
-	 PrintMaze();
+	 Sprinkle(SprinkleCount);
+	 DFS(1, 1);
+	 ConnectRooms();
+	 //PrintMaze();
 	 
 	 return Maze;
 }
@@ -73,10 +82,10 @@ void AAGMazeGenerator::InitMaze(int32 mazeWidth, int32 mazeHeight)
 	Maze = resArray;
 }
 
-bool AAGMazeGenerator::IsValidPos(int32 X, int32 Y)
+bool AAGMazeGenerator::IsValidPos(int32 X, int32 Y, TArray<int32> ValidColor)
 {
-	// 这个小于2的后面要改
-	return !IsOutOfBound(X, Y) && Maze[X][Y].Color < 2;
+	
+	return !IsOutOfBound(X, Y) && ValidColor.Contains(Maze[X][Y].Color);
 }
 
 bool AAGMazeGenerator::IsOutOfBound(int32 X, int32 Y)
@@ -93,13 +102,40 @@ void AAGMazeGenerator::PrintMaze()
 	}
 }
 
+int32 AAGMazeGenerator::GetWidth()
+{
+	return Maze.Num();
+}
+
+int32 AAGMazeGenerator::GetHeight()
+{
+	if(Maze.Num() == 0)
+		return 0;
+	return Maze[0].Num();
+}
+
+FTransform AAGMazeGenerator::GetTileTransform(int32 X, int32 Y, int32 Direction)
+{
+	FTransform resTransform;
+	if (IsOutOfBound(X, Y))
+	{
+		return resTransform;
+	}
+	FVector Location = GetActorLocation();
+	Location.X += X * RoomUnit.X;
+	Location.Y += Y * RoomUnit.Y;
+	resTransform.SetLocation(Location);
+	return resTransform;
+}
+
 void AAGMazeGenerator::DFS(int32 X, int32 Y)
 {
 	if(IsOutOfBound(X, Y))
 		return;
 	int32 Direction;
 	Maze[X][Y].Color = 2;
-	FMazePos NextPos = FindNextPoint(X, Y, Direction);
+	TArray<int32> DFSValidColors = {0, 1};
+	FMazePos NextPos = FindNextPoint(X, Y, Direction, DFSValidColors);
 	if (NextPos.X == -1 && NextPos.Y == -1)
 	{
 		if (Path.Num() == 0)
@@ -116,19 +152,54 @@ void AAGMazeGenerator::DFS(int32 X, int32 Y)
 	DFS(NextPos.X, NextPos.Y);
 }
 
+void AAGMazeGenerator::ConnectRooms()
+{
+	for(FMazeRoom room : Rooms)
+	{
+		TArray<int32> ConnectCandidateX;
+		TArray<int32> ConnectCandidateY;
+		for (int32 i = room.RoomStartPos.X; i < room.RoomStartPos.X + room.RoomWidth; ++i)
+		{
+			for (int32 j = room.RoomStartPos.Y; j < room.RoomStartPos.Y + room.RoomHeight; ++j)
+			{
+				TArray<int32> ConnectValidPos = {2};
+				int32 Direction;
+				// 代表该点的四个方位，记住中间要隔一格再取, 顺序是左下右上
+				TArray<int32> XOffset = { -1, 0, 1, 0 };
+				TArray<int32> YOffset = { 0, -1, 0, 1 };
+				if (FindNextPoint(i, j, Direction, ConnectValidPos).X != -1)
+				{
+					ConnectCandidateX.Add(i + XOffset[Direction]);
+					ConnectCandidateY.Add(j + YOffset[Direction]);
+				}
+			}
+		}
+
+		if (ConnectCandidateX.Num() != 0)
+		{
+			int32 index = FMath::RandRange(0, ConnectCandidateX.Num() - 1);
+			Maze[ConnectCandidateX[index]][ConnectCandidateY[index]].Color = 2;
+		}
+	}
+}
+
 int32 AAGMazeGenerator::GetColor(int32 X, int32 Y)
 {
+	if(GetWidth() == 0 || GetHeight() == 0)
+		return -1;
 	return Maze[X][Y].Color;
 }
 
 void AAGMazeGenerator::Sprinkle(int32 TryCount)
 {
-// 此处要加上对没有房间和房间边长为偶数的情况的判断
+	if(RoomLevels.Num() == 0)
+		return;
+
 	for (int32 k = 0; k < TryCount; ++k)
 	{
-// 		TSubclassOf<AAGMazeRoom> RoomClass = RoomClasses[FMath::RandRange(0, RoomClasses.Num())];
-// 		AAGMazeRoom* Room = RoomClass.GetDefaultObject();
-		FIntVector RoomSize = {3, 3, 3};
+//  	TSubclassOf<UAGMazeRoomData> RoomClass = RoomLevels[FMath::RandRange(0, RoomLevels.Num()-1)];
+// 		UAGMazeRoomData* Room = RoomClass.GetDefaultObject();
+		FIntVector RoomSize = {3, 3, 1};
 		if(RoomSize.X % 2 == 0 || RoomSize.Y % 2 == 0)
 			continue;
 		// 设置关卡生成时的方向, 暂时略
@@ -145,14 +216,16 @@ void AAGMazeGenerator::Sprinkle(int32 TryCount)
 			if (l % 2 == 1 && RoomSize.Y + l < Maze[0].Num())
 				RoomStartPosY.Add(l);
 		}
-		int32 RoomStartX = RoomStartPosX[FMath::FRandRange(0, RoomStartPosX.Num())];
-		int32 RoomStartY = RoomStartPosY[FMath::FRandRange(0, RoomStartPosY.Num())];
+		if(RoomStartPosX.Num() == 0 || RoomStartPosY.Num() == 0)
+			continue;
+		int32 RoomStartX = RoomStartPosX[FMath::RandRange(0, RoomStartPosX.Num()-1)];
+		int32 RoomStartY = RoomStartPosY[FMath::RandRange(0, RoomStartPosY.Num()-1)];
 		bool bOverlaped = false;
 		for (int32 i = RoomStartX; i < RoomStartX + RoomSize.X; ++i)
 		{
 			for (int32 j = RoomStartY; j < RoomStartY + RoomSize.Y; ++j)
 			{
-				if (GetColor(i, j) >= 2)
+				if (GetColor(i, j) >= 3)
 				{
 					bOverlaped = true;
 				}
@@ -164,14 +237,20 @@ void AAGMazeGenerator::Sprinkle(int32 TryCount)
 			{
 				for (int32 j = RoomStartY; j < RoomStartY + RoomSize.Y; ++j)
 				{
-					Maze[i][j].Color = 2;
+					Maze[i][j].Color = 3;
 				}
 			}
+			FMazeRoom room;
+			room.RoomStartPos = Maze[RoomStartX][RoomStartY];
+			room.RoomWidth = RoomSize.X;
+			room.RoomHeight = RoomSize.Y;
+			Rooms.Add(room);
 		}
+
 	}
 }
 
-FMazePos AAGMazeGenerator::FindNextPoint(int32 X, int32 Y, int32& Direction)
+FMazePos AAGMazeGenerator::FindNextPoint(int32 X, int32 Y, int32& Direction, TArray<int32> ValidColor)
 {
 	// 代表该点的四个方位，记住中间要隔一格再取, 顺序是左下右上
 	TArray<int32> XOffset = { -2, 0, 2, 0 };
@@ -180,7 +259,7 @@ FMazePos AAGMazeGenerator::FindNextPoint(int32 X, int32 Y, int32& Direction)
 	TArray<int32> CandidatePos;
 	for (int32 i = 0; i < 4; ++i)
 	{
-		if (IsValidPos(X + XOffset[i], Y + YOffset[i]))
+		if (IsValidPos(X + XOffset[i], Y + YOffset[i], ValidColor))
 		{
 			CandidatePos.Add(i);
 		}
@@ -194,7 +273,7 @@ FMazePos AAGMazeGenerator::FindNextPoint(int32 X, int32 Y, int32& Direction)
 		Direction = -1;
 		return Res;
 	}
-	Direction = CandidatePos[FMath::FRandRange(0, CandidatePos.Num())];
+	Direction = CandidatePos[FMath::RandRange(0, CandidatePos.Num()-1)];
 	Res.X = X + XOffset[Direction];
 	Res.Y = Y + YOffset[Direction];
 	return Res;

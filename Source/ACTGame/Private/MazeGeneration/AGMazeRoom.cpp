@@ -8,6 +8,6 @@ void AAGMazeRoom::Tick(float DeltaTime)
 	if (!bInited)
 	{
 		bInited = true;
-		this->SetActorTransform(transform);
+
 	}
 }
