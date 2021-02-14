@@ -21,4 +21,6 @@ public:
 		FIntVector RoomSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 RoomDirection; //0123对应左下右上，先这样吧
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSoftObjectPtr<UWorld> Level;
 };

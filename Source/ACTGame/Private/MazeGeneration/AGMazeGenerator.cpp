@@ -199,7 +199,7 @@ void AAGMazeGenerator::Sprinkle(int32 TryCount)
 	{
 //  	TSubclassOf<UAGMazeRoomData> RoomClass = RoomLevels[FMath::RandRange(0, RoomLevels.Num()-1)];
 // 		UAGMazeRoomData* Room = RoomClass.GetDefaultObject();
-		FIntVector RoomSize = {3, 3, 1};
+		FIntVector RoomSize = {9, 9, 1};
 		if(RoomSize.X % 2 == 0 || RoomSize.Y % 2 == 0)
 			continue;
 		// 设置关卡生成时的方向, 暂时略
