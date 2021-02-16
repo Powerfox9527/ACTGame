@@ -17,7 +17,7 @@ struct FMazePos
 public:
 	int32 X;
 	int32 Y;
-	// 0灰色，1黄色，2红色
+	// 0墙，1还没遍历到的地方（造路用），2路，3房间，4房间与其他地方的链接点
 	int32 Color;
 };
 
@@ -102,10 +102,17 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		int32 SprinkleCount = 100;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float DeadEndLeftPercent = 0.8;
 
 	// 一个格子的大小
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FIntVector RoomUnit;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TArray<TSubclassOf<AActor>> WallClass;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TArray<TSubclassOf<AActor>> FloorClass;
 
 	TArray<FMazePos> Path;
 	TArray<FMazeRoom> Rooms;
@@ -119,6 +126,9 @@ public:
 		int32 GetColor(int32 X, int32 Y);
 
 	UFUNCTION(BlueprintCallable)
+		void SetColor(int32 X, int32 Y, int32 Color);
+
+	UFUNCTION(BlueprintCallable)
 		void PrintMaze();
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
@@ -127,6 +137,8 @@ public:
 		int32 GetHeight();
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 		FTransform GetTileTransform(int32 X, int32 Y, int32 Direction);
+	UFUNCTION(BlueprintCallable)
+		void SpawnWallsAndFloor();
 
 protected:
 
@@ -142,6 +154,11 @@ protected:
 
 	void Sprinkle(int32 TryCount);
 
+	void CheckRooms();
+
+	void ClearDeadEnds(float LeftPercent);
+
+	bool IsDeadEnd(int32 i, int32 j);
 	//这个函数用来找下一个要生成路的点，返回坐标
 	FMazePos FindNextPoint(int32 X, int32 Y, int32& Direction, TArray<int32> ValidColor);
 };

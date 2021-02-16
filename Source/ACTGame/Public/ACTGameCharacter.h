@@ -29,7 +29,7 @@ class AACTGameCharacter : public AAGCharacterBase
 	class UTargetSystemComponent* TargetComponent;
 
 public:
-	AACTGameCharacter();
+	AACTGameCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)

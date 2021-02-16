@@ -102,7 +102,7 @@ UAGProceduralLevelStreaming* UAGProceduralLevelStreaming::Load(UObject* WorldCon
 	}
 
 	bool success = false;
-	UAGProceduralLevelStreaming* Instance = UAGProceduralLevelStreaming::LoadLevelInstanceBySoftObjectPtr(World, Data->Level, Location, Rotation, success);
+	UAGProceduralLevelStreaming* Instance = UAGProceduralLevelStreaming::LoadLevelInstance(World, Data->RoomName.ToString(), Location, Rotation, success);
 
 	if (!success)
 	{

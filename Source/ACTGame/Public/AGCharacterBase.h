@@ -20,7 +20,7 @@ class AAGCharacterBase : public ACharacter, public IAbilitySystemInterface, publ
 {
 	GENERATED_BODY()
 public:
-	AAGCharacterBase();
+	AAGCharacterBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable)
 		virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;

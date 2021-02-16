@@ -12,7 +12,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "ACTGame/Public/WeaponActor.h"
 
-AAGCharacterBase::AAGCharacterBase()
+AAGCharacterBase::AAGCharacterBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UAGAbilitySystemComponent>(TEXT("AbilitySystemObject"));
 	AttributeSet = CreateDefaultSubobject<UAGAttributeSet>(TEXT("AttributeSet"));
