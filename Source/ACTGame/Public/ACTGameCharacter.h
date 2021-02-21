@@ -11,7 +11,6 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FChangeStyleDelegate, FText, StyleName, bool, Styled);
 
-
 UCLASS(config=Game)
 class AACTGameCharacter : public AAGCharacterBase
 {
@@ -70,6 +69,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FChangeStyleDelegate ChangeStyle;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAIControll();
+
 protected:
 
 	/** Called for forwards/backward input */
@@ -98,6 +100,10 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void UnPossessed() override;
+
+	void LockOn();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -113,9 +119,6 @@ public:
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 	TArray<float> GetUIAttributeData();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	AAGCharacterBase* AbilityTarget;
 
 };
 

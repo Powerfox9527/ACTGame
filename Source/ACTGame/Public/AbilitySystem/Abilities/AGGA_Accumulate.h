@@ -5,34 +5,28 @@
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/AGGameplayAbility.h"
 #include "AGProjectile.h"
-#include "AbilitySystem/AGGameplayEffect.h"
-#include "ACTGame/Public/AGCharacterBase.h"
-#include "ACTGame/Public/WeaponActor.h"
-#include "AGGA_Magic.generated.h"
+#include "ACTGame/Public/ACTGameCharacter.h"
+#include "AGGA_Accumulate.generated.h"
 
-class AAGProjectile;
-class AAGCharacterBase;
-class AWeaponActor;
 /**
  * 
  */
 UCLASS()
-class ACTGAME_API UAGGA_Magic : public UAGGameplayAbility
+class ACTGAME_API UAGGA_Accumulate : public UAGGameplayAbility
 {
 	GENERATED_BODY()
-
-	UAGGA_Magic();
-	
-	/** Actually activate ability, do not call this directly. We'll call it from APAHeroCharacter::ActivateAbilitiesWithTags(). */
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
 public:
 
+	UAGGA_Accumulate();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<AAGProjectile> ProjectileClass;
+		TSubclassOf<AAGProjectile> ProjectileClass;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
 
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -40,9 +34,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float Damage;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		bool AttackMode = false;
 
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

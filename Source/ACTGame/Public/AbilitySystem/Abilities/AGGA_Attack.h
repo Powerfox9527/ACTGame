@@ -21,7 +21,11 @@ class ACTGAME_API UAGGA_Attack : public UAGGameplayAbility
 	UFUNCTION()
 		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 public:
-
-	UFUNCTION()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float MoveLength = 0.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float MoveTime = 0.3f;
+	UFUNCTION(BlueprintNativeEvent)
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+		void EventReceived_Implementation(FGameplayTag EventTag, FGameplayEventData EventData);
 };

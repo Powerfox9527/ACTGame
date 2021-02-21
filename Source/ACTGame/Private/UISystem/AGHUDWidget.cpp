@@ -148,23 +148,35 @@ bool UAGHUDWidget::ConfirmCommand()
 		SetCommandViewByTag(SelectTag);
 		LastTags.Push(FGameplayTag::RequestGameplayTag(FName("Command.Main")));
 	}
-	//选定能力种类后选定施展对象,这里记住一显示CommandView就要清空SelectTag
 	else if (SelectAbilityName.IsEmpty())
 	{
-		if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Item")))
+// 		if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Item"))
+// 		|| SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.WhiteMagic")))
+// 		{
+// 			LastTags.Push(SelectTag);
+// 			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Friend"));
+// 			SetCommandViewByTag(SelectTag);
+// 			SelectAbilityName = name;
+// 		}
+// 		else if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Ability"))
+// 			|| SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Magic")))
+// 		{
+// 			LastTags.Push(SelectTag);
+// 			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Enemy"));
+// 			SetCommandViewByTag(SelectTag);
+// 			SelectAbilityName = name;
+// 		}
+		TSubclassOf<UAGGameplayAbility> AbilityClass;
+		if (FindAbilityByName(name.ToString(), AbilityClass))
 		{
-			LastTags.Push(SelectTag);
-			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Friend"));
-			SetCommandViewByTag(SelectTag);
-			SelectAbilityName = name;
-		}
-		else if (SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Ability"))
-			|| SelectTag == FGameplayTag::RequestGameplayTag(FName("Command.Magic")))
-		{
-			LastTags.Push(SelectTag);
-			SelectTag = FGameplayTag::RequestGameplayTag(FName("Command.Enemy"));
-			SetCommandViewByTag(SelectTag);
-			SelectAbilityName = name;
+			UAGGameplayAbility* ability = AbilityClass.GetDefaultObject();
+			if (ability != nullptr)
+			{
+				LastTags.Push(SelectTag);
+				SelectTag = ability->CommandRequestTag;
+				SetCommandViewByTag(SelectTag);
+				SelectAbilityName = name;
+			}
 		}
 	}
 	else
@@ -216,4 +228,68 @@ bool UAGHUDWidget::ReturnToLastCommandView()
 		SetCommandViewByTag(LastTags.Pop());
 		return false;
 	}
+}
+
+void UAGHUDWidget::SwitchCharacter(bool IsLeft)
+{
+	if(!bCanSwitchCharacter)
+		return;
+	AACTGameGameMode* GameMode = Cast<AACTGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	AACTGameCharacter* PreCharacter = Cast<AACTGameCharacter>(GameMode->MainCharacter);
+	TArray<AActor*> characterActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AACTGameCharacter::StaticClass(), characterActors);
+	if(characterActors.Num() == 0 || characterActors.Num() == 1)
+		return;
+	TArray<AACTGameCharacter*> characters;
+	for (int32 i = 0; i < characterActors.Num(); ++i)
+	{
+		AACTGameCharacter* tempCharacter = Cast<AACTGameCharacter>(characterActors[i]);
+		characters.Add(tempCharacter);
+	}
+	int32 preIndex = characters.Find(PreCharacter);
+	int32 index = preIndex;
+	if (IsLeft)
+	{
+		if(index == 0)
+			index = characters.Num() - 1;
+		else
+			index--;
+	}
+	else
+
+	{
+		index = (index + 1) % characters.Num();
+	}
+	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	controller->SetViewTargetWithBlend(characters[index], 1.0f, EViewTargetBlendFunction::VTBlend_EaseInOut, 10.0f);
+	GameMode->MainCharacter = characters[index];
+	FTimerHandle UnusedHandle;
+	PreCharacter->GetWorldTimerManager().SetTimer(
+		UnusedHandle, this, &UAGHUDWidget::SwitchCharacter_CameraBlendComplete, 0.5f, false);
+	bCanSwitchCharacter = false;
+}
+void UAGHUDWidget::SwitchCharacter_CameraBlendComplete()
+{
+	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	AACTGameGameMode* GameMode = Cast<AACTGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	controller->Possess(GameMode->MainCharacter);
+	bCanSwitchCharacter = true;
+}
+
+bool UAGHUDWidget::FindAbilityByName(FString AbilityName, TSubclassOf<UAGGameplayAbility>& ability)
+{
+	//AACTGameCharacter* character = Cast<AACTGameCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	AACTGameGameMode* GameMode = Cast<AACTGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	AACTGameCharacter* character = Cast<AACTGameCharacter>(GameMode->MainCharacter);
+	TArray<TSubclassOf<UAGGameplayAbility>> abilities = character->CharacterAbilities;
+	for (TSubclassOf<UAGGameplayAbility> tempAbility : abilities)
+	{
+		UAGGameplayAbility* abilityInstance = tempAbility.GetDefaultObject();
+		if (abilityInstance->GetFName().ToString() == AbilityName || abilityInstance->AbilityName.ToString() == AbilityName)
+		{
+			ability = tempAbility;
+			return true;
+		}
+	}
+	return false;
 }

@@ -4,6 +4,8 @@
 #include "WeaponActor.h"
 #include "AbilitySystemComponent.h"
 #include "AGCharacterBase.h"
+#include "ACTGame/Public/AGEnemyBase.h"
+#include "ACTGame/Public/AGBlueprintFunctionLibrary.h"
 // Sets default values
 AWeaponActor::AWeaponActor()
 {
@@ -35,7 +37,8 @@ void AWeaponActor::Tick(float DeltaTime)
 
 void AWeaponActor::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != OwningCharacter && CanAttack)
+	if ( (!UAGBlueprintFunctionLibrary::IsBothPlayer(Cast<ACharacter>(OtherActor), OwningCharacter) && CanAttack)
+	|| Cast<AAGEnemyBase>(OwningCharacter) != nullptr && CanAttack)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Other Get Weapon Hit"));
 		AAGCharacterBase* EnmeyActor = Cast<AAGCharacterBase>(OtherActor);

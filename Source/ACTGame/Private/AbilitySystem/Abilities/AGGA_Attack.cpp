@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AGGA_Attack.h"
 #include "ACTGameCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "AbilitySystem/AbilityTask/AGAT_PlayMontageAndWaitForEvent.h"
 
 UAGGA_Attack::UAGGA_Attack()
@@ -30,6 +31,24 @@ void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Task->OnBlendOut.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->EventReceived.AddDynamic(this, &UAGGA_Attack::EventReceived);
 	Task->ReadyForActivation();
+	FVector EndLocation = OwningActor->GetVelocity();
+	if (OwningActor->AbilityTarget != nullptr)
+	{
+		EndLocation = OwningActor->AbilityTarget->GetActorLocation() - OwningActor->GetActorForwardVector() * 100.0f;
+		float Distance = OwningActor->AbilityTarget->GetDistanceTo(OwningActor);
+		if (Distance <= 150.0f)
+		{
+			MoveLength = 0.0f;
+			FString str = "Move Zero";
+			GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *str);
+		}
+	}
+	else
+	{
+		MoveLength = 0.0f;
+	}
+	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "Dash", OwningActor->GetActorForwardVector(), MoveLength, MoveTime, false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, EndLocation, 0, false);
+	TaskRootMotion->ReadyForActivation();
 /*	OwningActor->GetCharacterMovement()->SetActive(false);*/
 }
 
@@ -40,7 +59,7 @@ void UAGGA_Attack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventDa
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UAGGA_Attack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+void UAGGA_Attack::EventReceived_Implementation(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{

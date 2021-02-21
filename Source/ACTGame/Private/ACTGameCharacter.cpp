@@ -8,6 +8,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "AIModule/Classes/AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "ACTGame/ACTGameGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AACTGameCharacter
@@ -17,7 +21,6 @@ AACTGameCharacter::AACTGameCharacter(const FObjectInitializer& ObjectInitializer
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -30,8 +33,8 @@ AACTGameCharacter::AACTGameCharacter(const FObjectInitializer& ObjectInitializer
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->MaxAcceleration = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+	GetCharacterMovement()->MaxAcceleration = 1000.0f;
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 100.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
@@ -41,6 +44,7 @@ AACTGameCharacter::AACTGameCharacter(const FObjectInitializer& ObjectInitializer
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bDoCollisionTest = false;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -48,9 +52,10 @@ AACTGameCharacter::AACTGameCharacter(const FObjectInitializer& ObjectInitializer
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	TargetComponent = CreateDefaultSubobject<UTargetSystemComponent>(TEXT("TargetSystem"));
-	TargetComponent->PitchMax = -10.0f;
-	TargetComponent->PitchMin = -15.0f;
+	TargetComponent->PitchMax = 10.0f;
+	TargetComponent->PitchMin = -10.0f;
 	TargetComponent->bShouldControlRotation = false;
+	TargetComponent->bAdjustPitchBasedOnDistanceToTarget = false;
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -62,6 +67,7 @@ void AACTGameCharacter::Attack()
 		if (TargetComponent->LockedOnTargetActor != nullptr)
 		{
 			RotateToActor(TargetComponent->LockedOnTargetActor);
+			AbilityTarget = Cast<AAGCharacterBase>(TargetComponent->LockedOnTargetActor);
 		}
 		FGameplayTag tag = FGameplayTag::RequestGameplayTag(FName("AbilityInputID.Attack"));
 		FGameplayTagContainer tagContainer(tag);
@@ -123,6 +129,11 @@ void AACTGameCharacter::SetAbilityTarget(AAGCharacterBase* OtherCharacter)
 	AbilityTarget = OtherCharacter;
 }
 
+bool AACTGameCharacter::IsAIControll()
+{
+	return (Controller != nullptr) && Cast<AAIController>(Controller) != nullptr;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -130,8 +141,8 @@ void AACTGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+// 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+// 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AACTGameCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AACTGameCharacter::MoveRight);
@@ -152,6 +163,7 @@ void AACTGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("Command", IE_Pressed, this, &AACTGameCharacter::Command);
 	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &AACTGameCharacter::Roll);
 	PlayerInputComponent->BindAction("Style", IE_Pressed, this, &AACTGameCharacter::Style);
+	PlayerInputComponent->BindAction("LockOn", IE_Pressed, this, &AACTGameCharacter::LockOn);
 }
 
 void AACTGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
@@ -170,6 +182,23 @@ void AACTGameCharacter::BeginPlay()
 
 	// Spwan WeaponActor
 	SpawnWeaponAndAttach();
+}
+
+void AACTGameCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+	AACTGameGameMode* GameMode = Cast<AACTGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GameMode->MainCharacter != this && GameMode->MainCharacter != nullptr)
+	{
+		SpawnDefaultController();
+		TargetComponent->TargetLockOff();
+	}
+}
+
+void AACTGameCharacter::LockOn()
+{
+	TargetComponent->TargetActor();
+	AbilityTarget = Cast<AAGCharacterBase>(TargetComponent->GetLockedOnTargetActor());
 }
 
 void AACTGameCharacter::TurnAtRate(float Rate)
@@ -216,6 +245,11 @@ void AACTGameCharacter::MoveRight(float Value)
 void AACTGameCharacter::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
+	if (IsAIControll())
+	{
+		//AbilityTarget = UAGBlueprintFunctionLibrary::GetClosetActorOfClass(this, AAGEnemyBase::GetClass());
+		RotateToActor(AbilityTarget);
+	}
 }
 
 TArray<float> AACTGameCharacter::GetUIAttributeData()

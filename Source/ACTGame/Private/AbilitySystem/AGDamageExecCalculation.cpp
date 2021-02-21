@@ -125,7 +125,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(ThunderMagicTag))
 			{
 				ConstantPower += 1;
-				Break += 0.2f;
+				Break += 0.25f;
 			}
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(WindMagicTag))
 			{
@@ -138,7 +138,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(IceMagicTag))
 			{
 				ConstantPower += 1;
-				Break += 0.2f;
+				Break += 0.25f;
 			}
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(FireMagicTag))
 			{
@@ -151,7 +151,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(WindMagicTag))
 			{
 				ConstantPower += 1;
-				Break += 0.2f;
+				Break += 0.25f;
 			}
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(ThunderMagicTag))
 			{
@@ -164,7 +164,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(FireMagicTag))
 			{
 				ConstantPower += 1;
-				Break += 0.2f;
+				Break += 0.25f;
 			}
 			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(IceMagicTag))
 			{
@@ -180,7 +180,11 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	{
 		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::RandRange(0.95f, 1.05f);
 	}
-	Break += 0.01f * Power;
+	Break += 0.06f * Power;
+	if (TargetCharacter->IsBreaked)
+	{
+		Break = 0.0f;
+	}
 	MitigatedDamage = FMath::RoundToInt(MitigatedDamage);
 	if (MitigatedDamage > 0.f)
 	{

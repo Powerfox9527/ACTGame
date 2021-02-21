@@ -33,7 +33,6 @@ AAGCharacterBase::AAGCharacterBase(const FObjectInitializer& ObjectInitializer)
 	ThunderMagicTag = FGameplayTag::RequestGameplayTag(FName("Magic.Thunder"));
 
 	DamageTextClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/Blueprints/UI/DamageTextComponent.DamageTextComponent_C"));
-
 }
 
 UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
@@ -347,6 +346,8 @@ void AAGCharacterBase::RotateToActor(AActor* OtherActor, bool noPitch)
 
 bool AAGCharacterBase::IsPlayingMontage()
 {
+	if(GetMesh()->GetAnimInstance() == nullptr)
+		return false;
 	return GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
 }
 

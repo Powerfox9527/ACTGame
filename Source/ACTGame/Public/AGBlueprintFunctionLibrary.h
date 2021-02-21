@@ -20,7 +20,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void DebugHelper(float value)
 	{
-		FString TheFloatStr = FString::SanitizeFloat(value);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *TheFloatStr);
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *TheFloatStr);
 	}
+
+	UFUNCTION(BlueprintCallable)
+	static AActor* GetClosetActorOfClass(AActor* Origin, TSubclassOf<AActor> ActorClass);
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	static bool IsBothPlayer(ACharacter* CharacterA, ACharacter* CharacterB);
 };

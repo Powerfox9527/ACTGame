@@ -121,6 +121,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		virtual void GrantAbilities();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		AAGCharacterBase* AbilityTarget;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UAGAbilitySystemComponent* AbilitySystemComponent;

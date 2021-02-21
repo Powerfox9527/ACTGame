@@ -46,6 +46,14 @@ class ACTGAME_API UAGHUDWidget : public UUserWidget
 	UFUNCTION(BlueprintCallable)
 	bool ReturnToLastCommandView();
 
+	UFUNCTION(BlueprintCallable)
+	void SwitchCharacter(bool IsLeft);
+
+	void SwitchCharacter_CameraBlendComplete();
+
+	UFUNCTION(BlueprintCallable)
+	 bool FindAbilityByName(FString AbilityName, TSubclassOf<UAGGameplayAbility>& ability);
+
 public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	UListView* AbilityList;
@@ -59,6 +67,8 @@ public:
 	FText SelectAbilityName;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag SelectTag;
+
+	bool bCanSwitchCharacter = true;
 
 // 	UPROPERTY(BlueprintAssignable)
 // 	FActivateAbilityDelegate OnActivate;
