@@ -26,6 +26,10 @@ void UAGGA_Accumulate::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
+	if (OwningActor->AbilityTarget != nullptr)
+	{
+		OwningActor->RotateToActor(OwningActor->AbilityTarget);
+	}
 	OwningActor->GetMesh()->bPauseAnims = false;
 	// Play fire montage and wait for event telling us to spawn the projectile
 	UAGAT_PlayMontageAndWaitForEvent* Task = UAGAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, FName("Accumulate"), MontageToPlay, FGameplayTagContainer(), 1.0f, FName("StyleReleased"), false, 1.0f);

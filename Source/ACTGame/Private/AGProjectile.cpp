@@ -13,8 +13,10 @@ AAGProjectile::AAGProjectile()
 	bReplicates = true;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
+	ProjectileMovement->ProjectileGravityScale = 0.0f;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(FName("CapsuleComponent"));
+	CapsuleComponent->SetEnableGravity(false);
 }
 
 // Called when the game starts or when spawned

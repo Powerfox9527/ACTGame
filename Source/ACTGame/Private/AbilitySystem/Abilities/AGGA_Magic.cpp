@@ -96,17 +96,19 @@ void UAGGA_Magic::EventReceived(FGameplayTag EventTag, FGameplayEventData EventD
 		}
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		AAGProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAGProjectile>(ProjectileClass, ProjectileTransform, GetOwningActorFromActorInfo(),
-			Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		if (Projectile == nullptr)
+		for (int32 i = 0; i < ProjectileCount; ++i)
 		{
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-			return;
+			AAGProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAGProjectile>(ProjectileClass, ProjectileTransform, GetOwningActorFromActorInfo(),
+				Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			if (Projectile == nullptr)
+			{
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+				return;
+			}
+			Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+			Projectile->Range = Range;
+			Projectile->OwningCharacter = Cast<AAGCharacterBase>(this->GetOwningActorFromActorInfo());
+			Projectile->FinishSpawning(ProjectileTransform);
 		}
-		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
-		Projectile->Range = Range;
-		Projectile->OwningCharacter = Cast<AAGCharacterBase>(this->GetOwningActorFromActorInfo());
-		Projectile->FinishSpawning(ProjectileTransform);
 	}
 }

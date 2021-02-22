@@ -124,7 +124,7 @@ void UAGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 				// Play HitReact animation and sound with a multicast RPC.
 				const FHitResult* Hit = Data.EffectSpec.GetContext().GetHitResult();
 
-				if (Hit)
+				if (Hit && LocalDamageDone >= 200.0f)
 				{
 					EAGHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
 					switch (HitDirection)

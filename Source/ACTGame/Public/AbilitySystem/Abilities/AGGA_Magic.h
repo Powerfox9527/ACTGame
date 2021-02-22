@@ -44,6 +44,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool AttackMode = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int32 ProjectileCount = 1;
+
 	UFUNCTION()
 		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 

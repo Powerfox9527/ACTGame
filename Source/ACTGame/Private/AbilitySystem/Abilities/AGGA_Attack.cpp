@@ -43,10 +43,6 @@ void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 			GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *str);
 		}
 	}
-	else
-	{
-		MoveLength = 0.0f;
-	}
 	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "Dash", OwningActor->GetActorForwardVector(), MoveLength, MoveTime, false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, EndLocation, 0, false);
 	TaskRootMotion->ReadyForActivation();
 /*	OwningActor->GetCharacterMovement()->SetActive(false);*/
