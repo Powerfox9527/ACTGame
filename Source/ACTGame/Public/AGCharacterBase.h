@@ -29,7 +29,7 @@ public:
 		void PlayHitReact(FGameplayTag HitDirection, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
-		virtual void ShowDamageNumber(float LocalDamageDone);
+		virtual void ShowDamageNumber(float LocalDamageDone, FText text);
 
 	UFUNCTION(BlueprintCallable)
 		void SpawnWeaponAndAttach();
@@ -54,8 +54,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<class AWeaponActor> WeaponClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AWeaponActor* Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FGameplayTagContainer WeakPoints;
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 		float GetHealth();

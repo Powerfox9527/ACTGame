@@ -249,9 +249,9 @@ void AACTGameCharacter::Tick(float deltaTime)
 	if (IsAIControll())
 	{
 		//AbilityTarget = UAGBlueprintFunctionLibrary::GetClosetActorOfClass(this, AAGEnemyBase::GetClass());
-		RotateToActor(AbilityTarget);
+		//RotateToActor(AbilityTarget);
 	}
-	if (!IsPlayingMontage())
+	else if (!IsPlayingMontage())
 	{
 		AbilityTarget = Cast<AAGCharacterBase>(TargetComponent->LockedOnTargetActor);
 	}

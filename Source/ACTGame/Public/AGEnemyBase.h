@@ -14,4 +14,5 @@ class ACTGAME_API AAGEnemyBase : public AAGCharacterBase
 {
 	GENERATED_BODY()
 	
+	virtual void BeginPlay() override;
 };

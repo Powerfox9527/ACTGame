@@ -97,6 +97,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().MagicPowerDef, EvaluationParameters, MagicPower);
 	float MagicDefense = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().MagicDefenseDef, EvaluationParameters, MagicDefense);
+	FText text;
 	
 	float Damage = 0.0f;
 	// Capture optional damage value set on the damage GE as a CalculationModifier under the ExecutionCalculation
@@ -122,63 +123,18 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	{
 		if(container.HasTag(WindMagicTag))
 		{
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(ThunderMagicTag))
+			if (TargetCharacter->WeakPoints.HasAny(container))
 			{
 				ConstantPower += 1;
-				Break += 0.25f;
-			}
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(WindMagicTag))
-			{
-				ConstantPower -= 0.2;
-				Break += 0.05f;
+				Break +=  0.25f * FMath::FRandRange(0.2f, 0.7f) / (MagicPower - MagicDefense);
+				text = FText::FromString("WeakPoint");
 			}
 		}
-		if (container.HasTag(FireMagicTag))
-		{
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(IceMagicTag))
-			{
-				ConstantPower += 1;
-				Break += 0.25f;
-			}
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(FireMagicTag))
-			{
-				ConstantPower -= 0.2;
-				Break += 0.05f;
-			}
-		}
-		if (container.HasTag(ThunderMagicTag))
-		{
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(WindMagicTag))
-			{
-				ConstantPower += 1;
-				Break += 0.25f;
-			}
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(ThunderMagicTag))
-			{
-				ConstantPower -= 0.2;
-				Break += 0.05f;
-			}
-		}
-		if(container.HasTag(IceMagicTag))
-		{
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(FireMagicTag))
-			{
-				ConstantPower += 1;
-				Break += 0.25f;
-			}
-			if (TargetAbilitySystemComponent->HasMatchingGameplayTag(IceMagicTag))
-			{
-				ConstantPower -= 0.2;
-				Break += 0.05f;
-			}
-		}
-
-
-		MitigatedDamage = Damage + (ConstantPower + MagicPower - MagicDefense) * Power * FMath::RandRange(0.95f, 1.05f);
+		MitigatedDamage = Damage + (ConstantPower + MagicPower - MagicDefense) * Power * FMath::FRandRange(0.9f, 1.1f);
 	}
 	else
 	{
-		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::RandRange(0.95f, 1.05f);
+		MitigatedDamage = Damage + (ConstantPower + AttackPower - DefensePower) * Power * FMath::FRandRange(0.9f, 1.1f);
 	}
 	Break += 0.06f * Power;
 	if (TargetCharacter->IsBreaked)
@@ -200,4 +156,7 @@ void UAGDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 		UAGAbilitySystemComponent* SourceASC = Cast<UAGAbilitySystemComponent>(SourceAbilitySystemComponent);
 		TargetASC->ReceiveDamage(SourceASC, MitigatedDamage);
 	}
+
+	//show damage Number
+	TargetCharacter->ShowDamageNumber(MitigatedDamage, text);
 }

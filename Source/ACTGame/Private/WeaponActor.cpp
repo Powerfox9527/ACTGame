@@ -38,7 +38,7 @@ void AWeaponActor::Tick(float DeltaTime)
 void AWeaponActor::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if ( (!UAGBlueprintFunctionLibrary::IsBothPlayer(Cast<ACharacter>(OtherActor), OwningCharacter) && CanAttack)
-	|| Cast<AAGEnemyBase>(OwningCharacter) != nullptr && CanAttack)
+	|| Cast<AAGEnemyBase>(OwningCharacter) != nullptr && CanAttack && OtherActor != OwningCharacter)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Other Get Weapon Hit"));
 		AAGCharacterBase* EnmeyActor = Cast<AAGCharacterBase>(OtherActor);

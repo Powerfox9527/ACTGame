@@ -261,11 +261,11 @@ void UAGHUDWidget::SwitchCharacter(bool IsLeft)
 		index = (index + 1) % characters.Num();
 	}
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	controller->SetViewTargetWithBlend(characters[index], 1.0f, EViewTargetBlendFunction::VTBlend_EaseInOut, 10.0f);
+	controller->SetViewTargetWithBlend(characters[index], 1.5f, EViewTargetBlendFunction::VTBlend_EaseInOut, 10.0f);
 	GameMode->MainCharacter = characters[index];
 	FTimerHandle UnusedHandle;
 	PreCharacter->GetWorldTimerManager().SetTimer(
-		UnusedHandle, this, &UAGHUDWidget::SwitchCharacter_CameraBlendComplete, 0.5f, false);
+		UnusedHandle, this, &UAGHUDWidget::SwitchCharacter_CameraBlendComplete, 1.5f, false);
 	bCanSwitchCharacter = false;
 }
 void UAGHUDWidget::SwitchCharacter_CameraBlendComplete()

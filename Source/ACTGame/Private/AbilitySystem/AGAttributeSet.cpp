@@ -148,7 +148,6 @@ void UAGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 // 				{
 // 					PC->ShowDamageNumber(LocalDamageDone, TargetCharacter);
 // 				}
-				SourceCharacter->ShowDamageNumber(LocalDamageDone);
 
 				if (!TargetCharacter->IsAlive())
 				{

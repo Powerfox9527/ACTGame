@@ -3,3 +3,7 @@
 
 #include "AGEnemyBase.h"
 
+void AAGEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
+}

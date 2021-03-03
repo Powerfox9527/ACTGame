@@ -14,6 +14,6 @@ class ACTGAME_API UAGDamageTextWidgetComponent : public UWidgetComponent
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetDamageText(float DamageAmount);
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetDamageText(float DamageAmount, FText text);
 };

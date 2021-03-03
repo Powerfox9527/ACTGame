@@ -17,7 +17,7 @@ struct FMazePos
 public:
 	int32 X;
 	int32 Y;
-	// 0墙，1还没遍历到的地方（造路用），2路，3房间，4房间与其他地方的链接点
+	// 0墙，1还没遍历到的地方（造路用），2路，3房间，4房间与其他地方的链接点, 5出口
 	int32 Color;
 };
 
@@ -99,6 +99,8 @@ public:
 		TArray<FMazeRow> Maze;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		TArray<TSubclassOf<UAGMazeRoomData>> RoomLevels;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+		FMazePos ExitPos;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		int32 SprinkleCount = 100;
@@ -113,6 +115,8 @@ public:
 		TArray<TSubclassOf<AActor>> WallClass;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		TArray<TSubclassOf<AActor>> FloorClass;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TSubclassOf<AActor> ExitClass;
 
 	TArray<FMazePos> Path;
 	TArray<FMazeRoom> Rooms;
@@ -139,6 +143,8 @@ public:
 		FTransform GetTileTransform(int32 X, int32 Y, int32 Direction);
 	UFUNCTION(BlueprintCallable)
 		void SpawnWallsAndFloor();
+	UFUNCTION(BlueprintCallable)
+		void SpawnExit();
 
 protected:
 

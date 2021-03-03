@@ -31,19 +31,23 @@ void UAGGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Task->OnBlendOut.AddDynamic(this, &UAGGA_Attack::OnCompleted);
 	Task->EventReceived.AddDynamic(this, &UAGGA_Attack::EventReceived);
 	Task->ReadyForActivation();
-	FVector EndLocation = OwningActor->GetVelocity();
+	//FVector EndLocation = OwningActor->GetActorForwardVector() * MoveLength + OwningActor->GetActorLocation();
+	FVector PointVector = OwningActor->GetActorForwardVector();
+	PointVector.Normalize(0.001);
 	if (OwningActor->AbilityTarget != nullptr)
 	{
-		EndLocation = OwningActor->AbilityTarget->GetActorLocation() - OwningActor->GetActorForwardVector() * 100.0f;
+		//EndLocation = OwningActor->AbilityTarget->GetActorLocation();
+		PointVector = OwningActor->AbilityTarget->GetActorLocation() - OwningActor->GetActorLocation();
+		//EndLocation = OwningActor->AbilityTarget->GetActorLocation() - (PointVector) * 20.0f;
 		float Distance = OwningActor->AbilityTarget->GetDistanceTo(OwningActor);
 		if (Distance <= 150.0f)
 		{
 			MoveLength = 0.0f;
 			FString str = "Move Zero";
-			GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *str);
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0, FColor::Red, *str);
 		}
 	}
-	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "Dash", OwningActor->GetActorForwardVector(), MoveLength, MoveTime, false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, EndLocation, 0, false);
+	UAbilityTask_ApplyRootMotionConstantForce* TaskRootMotion = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce(this, "AttackMove", OwningActor->GetActorForwardVector(), MoveLength, MoveTime, false, nullptr, ERootMotionFinishVelocityMode::SetVelocity, OwningActor->GetVelocity(), 0, false);
 	TaskRootMotion->ReadyForActivation();
 /*	OwningActor->GetCharacterMovement()->SetActive(false);*/
 }

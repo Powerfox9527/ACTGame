@@ -69,6 +69,7 @@ TArray<FMazeRow> AAGMazeGenerator::GenerateLevel(int32 mazeWidth, int32 mazeHeig
 	 ConnectRooms();
 	 CheckRooms();
 	 ClearDeadEnds(DeadEndLeftPercent);
+	 SpawnExit();
 	 SpawnWallsAndFloor();
 	 //PrintMaze();
 	 
@@ -178,6 +179,16 @@ void AAGMazeGenerator::SpawnWallsAndFloor()
 			}
 		}
 	}
+}
+
+void AAGMazeGenerator::SpawnExit()
+{
+	int32 ExitX = Maze.Num() - 1;
+	int32 ExitY = FMath::RandRange(1, Maze[0].Num() - 2);
+	ExitPos = Maze[ExitX][ExitY];
+	SetColor(ExitX, ExitY, 5);
+	FTransform transform = GetTileTransform(ExitX, ExitY, 0);
+	GetWorld()->SpawnActor<AActor>(ExitClass, transform);
 }
 
 void AAGMazeGenerator::DFS(int32 X, int32 Y)

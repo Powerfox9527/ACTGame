@@ -40,7 +40,7 @@ UAbilitySystemComponent* AAGCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
+void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone, FText text)
 {
 	if(DamageTextClass.GetDefaultObject() == nullptr)
 		return;
@@ -67,7 +67,7 @@ void AAGCharacterBase::ShowDamageNumber(float LocalDamageDone)
 	float height = Result.Y;
 	DamageText->GetWidget()->SetPositionInViewport(
 		FVector2D(FMath::RandRange(width * 0.33f, width * 0.67f), FMath::RandRange(height * 0.33f, height * 0.67f)));
-	DamageText->SetDamageText(LocalDamageDone);
+	DamageText->SetDamageText(LocalDamageDone, text);
 }
 
 void AAGCharacterBase::SpawnWeaponAndAttach()
